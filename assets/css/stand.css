@@ -39,3 +39,26 @@ body.stand .container{max-width:1040px}
 .s-toast{padding:12px 14px;border-radius:14px;border:1px solid var(--s-border);background:rgba(255,255,255,.7);color:rgba(15,23,42,.85)}
 .s-toast.ok{border-color:rgba(34,197,94,.35)}
 .s-toast.err{border-color:rgba(239,68,68,.4)}
+
+.s-modalOverlay{position:fixed;inset:0;background:rgba(15,23,42,.45);display:flex;align-items:center;justify-content:center;padding:18px;z-index:9999;backdrop-filter:saturate(130%) blur(2px)}
+.s-modal{width:min(560px,100%);background:#fff;border:1px solid rgba(15,23,42,.10);border-radius:18px;box-shadow:0 28px 80px rgba(15,23,42,.25);overflow:hidden;transform:translateY(8px) scale(.98);opacity:0;animation:sModalIn .18s ease-out forwards}
+@keyframes sModalIn{to{transform:translateY(0) scale(1);opacity:1}}
+.s-modalHead{padding:14px 16px;border-bottom:1px solid rgba(15,23,42,.08);display:flex;align-items:center;justify-content:space-between;gap:10px}
+.s-modalTitle{font-weight:1000;color:rgba(15,23,42,.90)}
+.s-modalClose{appearance:none;border:1px solid rgba(15,23,42,.10);background:rgba(255,255,255,.9);border-radius:12px;min-height:38px;padding:0 12px;font-weight:1000;cursor:pointer}
+.s-modalBody{padding:16px}
+.s-modalMsg{color:rgba(15,23,42,.75);line-height:1.35}
+.s-modalKpi{margin-top:12px;border:1px solid rgba(15,23,42,.10);background:rgba(15,23,42,.03);border-radius:14px;padding:12px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.s-modalKpi .k{font-size:12px;color:rgba(15,23,42,.55);font-weight:1000}
+.s-modalKpi .v{font-size:18px;font-weight:1100}
+.s-modalActions{display:flex;gap:10px;justify-content:flex-end;margin-top:14px;flex-wrap:wrap}
+.s-modalBtn{appearance:none;border:0;border-radius:14px;min-height:48px;padding:0 14px;font-weight:1100;cursor:pointer}
+.s-modalBtn.primary{background:linear-gradient(180deg,var(--s-primary),var(--s-primary2));color:#fff}
+.s-modalBtn.neutral{border:1px solid rgba(15,23,42,.10);background:rgba(255,255,255,.9);color:rgba(15,23,42,.85)}
+.s-modalBtn.danger{background:rgba(239,68,68,.92);color:#fff}
+.s-modalNote{margin-top:12px}
+.s-modalNote .l{font-size:12px;color:rgba(15,23,42,.55);font-weight:1000;margin-bottom:6px}
+.s-modalNote textarea{width:100%;min-height:90px;border-radius:14px;border:1px solid rgba(15,23,42,.10);padding:12px 12px;font-size:14px;outline:none;resize:vertical}
+.s-modalNote textarea:focus{border-color:rgba(124,58,237,.35);box-shadow:0 0 0 4px rgba(124,58,237,.14)}
+.s-modal.success .s-modalHead{background:rgba(34,197,94,.10)}
+.s-modal.error .s-modalHead{background:rgba(239,68,68,.10)}

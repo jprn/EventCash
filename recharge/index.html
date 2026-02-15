@@ -51,69 +51,72 @@
       </div>
 
       <div id="rechargeForm">
-      <div class="r-layout">
-        <div class="r-card">
-          <div class="r-card-body">
-            <div class="r-section-title">Montant de la recharge</div>
-
-            <div id="existingBlock" style="display:none">
-              <div class="r-label">Wallet existant (token)</div>
-              <div class="r-actions" style="grid-template-columns:1fr auto">
-                <input id="existingToken" class="r-input" placeholder="Coller le token" />
-                <button id="loadExisting" class="r-secondary" type="button">Charger</button>
-              </div>
-              <div style="height:16px"></div>
-            </div>
-
-            <div class="r-label">Montants rapides</div>
-            <div class="r-grid-amounts">
-              <button class="r-amt" type="button" data-amt="10">10€</button>
-              <button class="r-amt" type="button" data-amt="20">20€</button>
-              <button class="r-amt" type="button" data-amt="30">30€</button>
-              <button class="r-amt" type="button" data-amt="50">50€</button>
-            </div>
-
-            <div style="height:16px"></div>
-            <div class="r-label">Montant personnalisé</div>
-            <input id="amount" class="r-input" inputmode="decimal" placeholder="Entrez un montant" />
-
-            <div style="height:16px"></div>
-            <button id="createWallet" class="r-cta" type="button">
-              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
-              Créer Wallet
-            </button>
-
-            <div style="height:12px"></div>
-            <div class="r-actions">
-              <button id="credit" class="r-secondary" type="button">Recharger</button>
-              <button id="printQr" class="r-secondary" type="button">Imprimer QR</button>
-            </div>
-
-            <div style="height:12px"></div>
-            <div class="r-toast" id="toast" style="display:block">Prêt.</div>
-          </div>
-        </div>
-
-        <div class="r-meta">
-          <div class="r-kpis">
-            <div class="r-kpi">
-              <div class="k">Solde</div>
-              <div class="v" id="walletBalance">0.00</div>
-            </div>
-          </div>
-
+        <div class="r-layout single">
           <div class="r-card">
             <div class="r-card-body">
-              <div class="r-section-title">QR</div>
-              <div class="qr-wrap">
-                <div class="r-qr" id="qr"></div>
-                <div style="min-width:240px">
-                  <div class="r-label">Wallet ID</div>
-                  <div class="r-mono" id="walletId"></div>
-                  <div style="height:12px"></div>
-                  <div class="r-label">Token</div>
-                  <div class="r-mono" id="walletToken"></div>
+              <div class="r-section-title" id="formTitle">Montant de la recharge</div>
+
+              <div id="existingBlock" style="display:none">
+                <div class="r-section-sub">Recharger un wallet existant</div>
+                <div class="r-label">Token du QR code</div>
+                <div class="r-actions r-searchRow">
+                  <input id="existingToken" class="r-input" placeholder="Coller le token du wallet" />
+                  <button id="loadExisting" class="r-cta r-ctaIcon" type="button" aria-label="Rechercher">
+                    <svg viewBox="0 0 24 24"><path d="M21 21l-4.3-4.3"/><path d="M11 18a7 7 0 1 1 0-14 7 7 0 0 1 0 14"/></svg>
+                  </button>
                 </div>
+              </div>
+
+              <div id="existingLoaded" style="display:none">
+                <div class="r-section-sub">Recharger un wallet existant</div>
+                <div class="r-balanceCard">
+                  <div class="k">Solde actuel</div>
+                  <div class="v" id="walletBalance">0.00€</div>
+                </div>
+              </div>
+
+              <div id="amountBlock">
+                <div class="r-label">Montants rapides</div>
+                <div class="r-grid-amounts">
+                  <button class="r-amt" type="button" data-amt="10">10€</button>
+                  <button class="r-amt" type="button" data-amt="20">20€</button>
+                  <button class="r-amt" type="button" data-amt="30">30€</button>
+                  <button class="r-amt" type="button" data-amt="50">50€</button>
+                </div>
+
+                <div style="height:16px"></div>
+                <div class="r-label">Montant personnalisé</div>
+                <input id="amount" class="r-input" inputmode="decimal" placeholder="Entrez un montant" />
+              </div>
+
+              <div style="height:16px"></div>
+
+              <button id="createWallet" class="r-cta" type="button">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
+                Créer Wallet
+              </button>
+
+              <div id="existingActions" style="display:none">
+                <div style="height:12px"></div>
+                <div class="r-actions r-actionsBottom">
+                  <button id="cancelExisting" class="r-secondary" type="button">Annuler</button>
+                  <button id="credit" class="r-cta" type="button">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.34-5.66"/><path d="M20 4v6h-6"/></svg>
+                    Recharger
+                  </button>
+                </div>
+              </div>
+
+              <button id="printQr" class="r-secondary" type="button" style="display:none">Imprimer QR</button>
+
+              <div style="height:12px"></div>
+              <div class="r-toast" id="toast" style="display:block">Prêt.</div>
+
+              <div id="hiddenWalletMeta" style="display:none">
+                <div id="walletId"></div>
+                <div id="walletActive"></div>
+                <div class="r-qr" id="qr"></div>
+                <div class="r-mono" id="walletToken"></div>
               </div>
             </div>
           </div>
@@ -121,7 +124,6 @@
       </div>
 
       <div class="footer">Templates — renomme ce dossier sur Hostinger en URL secrète.</div>
-      </div>
 
       <div id="successScreen" style="display:none">
         <div class="r-successHero">

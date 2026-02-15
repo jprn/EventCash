@@ -15,7 +15,8 @@
     state.wallet=w;
     $("#walletId").textContent=w?String(w.id||""):"";
     $("#walletToken").textContent=w?String(w.qr_token||""):"";
-    $("#walletBalance").textContent=w?String(w.balance||"0.00"):"0.00";
+    $("#walletBalance").textContent=w?String(w.balance||"0.00")+"€":"0.00€";
+    $("#walletActive").textContent=w?(String(w.is_active)==="1"?"actif":"inactif"):"";
   }
 
   async function renderQr(token){
@@ -94,6 +95,16 @@
     setWallet(w);
     await renderQr(w.qr_token);
     toast("Wallet chargé.","ok");
+
+    const existingLoaded=$("#existingLoaded");
+    const amountBlock=$("#amountBlock");
+    const existingActions=$("#existingActions");
+    const existingBlock=$("#existingBlock");
+    if(existingBlock){existingBlock.style.display='none';}
+    if(existingLoaded){existingLoaded.style.display='block';}
+    if(amountBlock){amountBlock.style.display='block';}
+    if(existingActions){existingActions.style.display='block';}
+    $("#credit").disabled=false;
   }
 
   async function credit(){
@@ -186,27 +197,40 @@
     const existingBlock=$("#existingBlock");
     const createBtn=$("#createWallet");
     const creditBtn=$("#credit");
+    const formTitle=$("#formTitle");
+    const amountBlock=$("#amountBlock");
+    const existingLoaded=$("#existingLoaded");
+    const existingActions=$("#existingActions");
 
-    if(mode==="new"){
+    if(next==="new"){
       tabNew.classList.add("active");
-      tabNew.setAttribute("aria-selected","true");
       tabExisting.classList.remove("active");
+      tabNew.setAttribute("aria-selected","true");
       tabExisting.setAttribute("aria-selected","false");
       existingBlock.style.display="none";
-
+      if(existingLoaded){existingLoaded.style.display='none';}
+      if(existingActions){existingActions.style.display='none';}
+      if(amountBlock){amountBlock.style.display='block';}
       createBtn.style.display="flex";
-      creditBtn.style.display="inline-flex";
-      creditBtn.disabled=!state.wallet;
+      creditBtn.disabled=true;
+      if(formTitle){formTitle.textContent="Montant de la recharge";}
+      setWallet(null);
+      renderQr("");
+      return;
     } else {
       tabExisting.classList.add("active");
       tabExisting.setAttribute("aria-selected","true");
       tabNew.classList.remove("active");
       tabNew.setAttribute("aria-selected","false");
       existingBlock.style.display="block";
-
+      if(existingLoaded){existingLoaded.style.display='none';}
+      if(existingActions){existingActions.style.display='none';}
+      if(amountBlock){amountBlock.style.display='none';}
       createBtn.style.display="none";
-      creditBtn.style.display="inline-flex";
-      creditBtn.disabled=!state.wallet;
+      creditBtn.disabled=true;
+      if(formTitle){formTitle.textContent="Recharger un wallet existant";}
+      setWallet(null);
+      renderQr("");
     }
   }
 
@@ -214,13 +238,28 @@
     $("#tab-new").addEventListener("click",()=>setMode("new"));
     $("#tab-existing").addEventListener("click",()=>setMode("existing"));
 
-    $("#createWallet").addEventListener("click",()=>createWallet().then(()=>setMode("new")).then(()=>{
-      $("#credit").disabled=false;
-    }).catch(e=>toast(e.message,"err")));
-    $("#loadExisting").addEventListener("click",()=>loadExisting().then(()=>{
-      $("#credit").disabled=false;
-    }).catch(e=>toast(e.message,"err")));
+    $("#createWallet").addEventListener("click",()=>createWallet().catch(e=>toast(e.message,"err")));
+    $("#loadExisting").addEventListener("click",()=>loadExisting().then(()=>{$("#credit").disabled=false;}).catch(e=>toast(e.message,"err")));
     $("#existingToken").addEventListener("keydown",e=>{if(e.key==="Enter"){loadExisting().then(()=>{$("#credit").disabled=false;}).catch(er=>toast(er.message,"err"));}});
+
+    const cancel=$("#cancelExisting");
+    if(cancel){
+      cancel.addEventListener('click',()=>{
+        $("#existingToken").value='';
+        $("#amount").value='';
+        const existingBlock=$("#existingBlock");
+        const existingLoaded=$("#existingLoaded");
+        const amountBlock=$("#amountBlock");
+        const existingActions=$("#existingActions");
+        if(existingBlock){existingBlock.style.display='block';}
+        if(existingLoaded){existingLoaded.style.display='none';}
+        if(amountBlock){amountBlock.style.display='none';}
+        if(existingActions){existingActions.style.display='none';}
+        $("#credit").disabled=true;
+        setWallet(null);
+        renderQr("");
+      });
+    }
 
     $("#credit").addEventListener("click",()=>credit().catch(e=>toast(e.message,"err")));
     document.querySelectorAll("[data-amt]").forEach(btn=>btn.addEventListener("click",()=>{$("#amount").value=btn.getAttribute("data-amt");}));
