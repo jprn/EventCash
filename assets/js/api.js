@@ -9,7 +9,15 @@ window.EvenCashApi=(function(){
     if(query&&typeof query==="object"){
       Object.keys(query).forEach(k=>{if(query[k]!==undefined&&query[k]!==null)url.searchParams.set(k,String(query[k]));});
     }
+
+    if(key){
+      url.searchParams.set('key', key);
+    }
+
     const headers={"X-EVENCASH-KEY":key};
+    if(key){
+      headers["Authorization"]="Bearer "+key;
+    }
     let payload=null;
     if(body!==null){
       headers["Content-Type"]="application/json";
