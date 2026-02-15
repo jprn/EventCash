@@ -25,6 +25,22 @@ function get_json_body(): array {
 
 function require_api_key(): void {
   $key = $_SERVER['HTTP_X_EVENCASH_KEY'] ?? '';
+
+  if (!is_string($key) || $key === '') {
+    $auth = $_SERVER['HTTP_AUTHORIZATION'] ?? $_SERVER['REDIRECT_HTTP_AUTHORIZATION'] ?? '';
+    if (is_string($auth) && preg_match('/^Bearer\s+(.+)$/i', trim($auth), $m)) {
+      $key = $m[1];
+    }
+  }
+
+  if (!is_string($key) || $key === '') {
+    $key = $_GET['key'] ?? '';
+  }
+
+  if (!is_string($key) || $key === '') {
+    $key = $_POST['key'] ?? '';
+  }
+
   if (!is_string($key) || $key !== EVENCASH_API_KEY) {
     send_json(['error' => 'unauthorized'], 401);
   }
