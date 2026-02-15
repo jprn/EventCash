@@ -53,27 +53,73 @@
         : '<span class="a-badge off">Inactif</span>';
 
       const tdAction=document.createElement('td');
-      const btn=document.createElement('button');
-      btn.type='button';
-      btn.className='a-action danger';
-      btn.textContent='Désactiver';
-      btn.disabled=!active;
-      btn.addEventListener('click',async ()=>{
-        // Prevent row click preview
-        if (window.event && typeof window.event.stopPropagation === 'function') {
-          window.event.stopPropagation();
-        }
+      const actions=document.createElement('div');
+      actions.className='a-actions';
+
+      const btnOff=document.createElement('button');
+      btnOff.type='button';
+      btnOff.className='a-iconBtn off';
+      btnOff.title='Désactiver';
+      btnOff.disabled=!active;
+      btnOff.innerHTML='<svg viewBox="0 0 24 24"><path d="M6 6l12 12"/><path d="M18 6L6 18"/></svg>';
+      btnOff.addEventListener('click',async (ev)=>{
+        ev.stopPropagation();
         try{
-          btn.disabled=true;
+          btnOff.disabled=true;
           await api.deactivateWallet(String(w.id));
           await refresh();
           toast('Wallet désactivé.','ok');
         }catch(e){
-          btn.disabled=false;
+          btnOff.disabled=false;
           toast(e.message,'err');
         }
       });
-      tdAction.appendChild(btn);
+
+      const btnOn=document.createElement('button');
+      btnOn.type='button';
+      btnOn.className='a-iconBtn on';
+      btnOn.title='Réactiver';
+      btnOn.disabled=active;
+      btnOn.innerHTML='<svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>';
+      btnOn.addEventListener('click',async (ev)=>{
+        ev.stopPropagation();
+        try{
+          btnOn.disabled=true;
+          await api.activateWallet(String(w.id));
+          await refresh();
+          toast('Wallet réactivé.','ok');
+        }catch(e){
+          btnOn.disabled=false;
+          toast(e.message,'err');
+        }
+      });
+
+      const btnTrash=document.createElement('button');
+      btnTrash.type='button';
+      btnTrash.className='a-iconBtn trash';
+      btnTrash.title='Supprimer (wallet inactif uniquement)';
+      btnTrash.disabled=active;
+      btnTrash.innerHTML='<svg viewBox="0 0 24 24"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M6 6l1 16h10l1-16"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>';
+      btnTrash.addEventListener('click',async (ev)=>{
+        ev.stopPropagation();
+        if(!confirm('Supprimer ce wallet ? (possible uniquement si inactif et sans transactions)')){
+          return;
+        }
+        try{
+          btnTrash.disabled=true;
+          await api.deleteWallet(String(w.id));
+          await refresh();
+          toast('Wallet supprimé.','ok');
+        }catch(e){
+          btnTrash.disabled=false;
+          toast(e.message,'err');
+        }
+      });
+
+      actions.appendChild(btnOff);
+      actions.appendChild(btnOn);
+      actions.appendChild(btnTrash);
+      tdAction.appendChild(actions);
 
       tr.addEventListener('click',()=>showWalletPreview(w));
 
