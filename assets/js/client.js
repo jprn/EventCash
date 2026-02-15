@@ -44,7 +44,14 @@
     }catch(_e){
       // fallback
     }
-    el.textContent=String(token);
+    const img=document.createElement('img');
+    img.alt='QR';
+    img.width=260;
+    img.height=260;
+    img.loading='lazy';
+    img.referrerPolicy='no-referrer';
+    img.src='https://api.qrserver.com/v1/create-qr-code/?size=260x260&data='+encodeURIComponent(String(token));
+    el.appendChild(img);
   }
 
   async function downloadPayQr(){
@@ -58,6 +65,11 @@
       document.body.appendChild(a);
       a.click();
       a.remove();
+      return;
+    }
+    const img=el.querySelector('img');
+    if(img && img.src){
+      window.open(img.src,'_blank');
       return;
     }
     toast("Téléchargement indisponible.","err");

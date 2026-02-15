@@ -36,8 +36,14 @@
     } catch(_e) {
       // fallback below
     }
-    wrap.textContent=value;
-    toast("QR indisponible (lib non chargée).","err");
+    const img=document.createElement('img');
+    img.alt='QR';
+    img.width=220;
+    img.height=220;
+    img.loading='lazy';
+    img.referrerPolicy='no-referrer';
+    img.src='https://api.qrserver.com/v1/create-qr-code/?size=220x220&data='+encodeURIComponent(value);
+    wrap.appendChild(img);
   }
 
   function amountFromInput(){
@@ -47,15 +53,32 @@
     return Math.round(n*100)/100;
   }
 
+  function optionalAmountFromInput(){
+    const raw=String($("#amount").value||"").trim();
+    if(!raw){
+      return null;
+    }
+    return amountFromInput();
+  }
+
   async function createWallet(){
     toast("Création du wallet…");
     const data=await api.walletCreate();
     const w={id:data.id,qr_token:data.qr_token,balance:data.balance,is_active:data.is_active};
     setWallet(w);
+
+    const amount=optionalAmountFromInput();
+    if(amount!==null){
+      toast("Crédit du wallet…");
+      const creditRes=await api.walletCredit(w.id, amount);
+      w.balance=creditRes.balance;
+      setWallet(w);
+    }
+
     await renderQr(w.qr_token);
     toast("Wallet créé.","ok");
 
-    showSuccessScreen();
+    await showSuccessScreen();
   }
 
   async function loadExisting(){
@@ -102,7 +125,15 @@
     } catch(_e) {
       // fallback below
     }
-    el.textContent=value;
+    const s=Number(size||240);
+    const img=document.createElement('img');
+    img.alt='QR';
+    img.width=s;
+    img.height=s;
+    img.loading='lazy';
+    img.referrerPolicy='no-referrer';
+    img.src='https://api.qrserver.com/v1/create-qr-code/?size='+encodeURIComponent(String(s)+'x'+String(s))+'&data='+encodeURIComponent(value);
+    el.appendChild(img);
   }
 
   async function showSuccessScreen(){
@@ -190,7 +221,8 @@
       if(!token){toast("Aucun wallet.","err");return;}
       const w=window.open("","_blank");
       if(!w){toast("Popup bloquée.","err");return;}
-      w.document.write('<!doctype html><html><head><meta charset="utf-8"><title>QR</title><style>body{font-family:system-ui;margin:24px} .t{font-size:14px;color:#111;margin-top:10px;word-break:break-all}</style></head><body><div id="q"></div><div class="t">'+token+'</div><script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"><\/script><script>QRCode.toCanvas(document.getElementById("q"),"'+token+'",{width:320,margin:1});window.print();<\/script></body></html>');
+      const imgSrc='https://api.qrserver.com/v1/create-qr-code/?size=320x320&data='+encodeURIComponent(token);
+      w.document.write('<!doctype html><html><head><meta charset="utf-8"><title>QR</title><style>body{font-family:system-ui;margin:24px} img{width:320px;height:320px} .t{font-size:14px;color:#111;margin-top:10px;word-break:break-all}</style></head><body><img src="'+imgSrc+'" alt="QR" /><div class="t">'+token+'</div><script>window.onload=()=>window.print();<\/script></body></html>');
       w.document.close();
     });
 
