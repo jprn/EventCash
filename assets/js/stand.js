@@ -24,7 +24,9 @@
     state.products.forEach(p=>{
       const btn=document.createElement("button");
       btn.type="button";
-      btn.className="btn small "+(state.selected&&state.selected.id===p.id?"primary":"");
+      const isActive=state.selected&&state.selected.id===p.id;
+      const useNew=document.body && document.body.classList && document.body.classList.contains('stand');
+      btn.className=useNew?("s-chip "+(isActive?"active":"")):("btn small "+(isActive?"primary":""));
       btn.textContent=p.name+" — "+p.price+"€";
       btn.addEventListener("click",()=>{state.selected=p;renderProducts();});
       box.appendChild(btn);

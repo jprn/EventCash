@@ -22,20 +22,33 @@
     $("#totalTx").textContent=String(data.total_transactions);
     $("#sumBalances").textContent=euro(data.sum_active_balances);
 
-    const tbody=$("#byStand");
-    tbody.innerHTML="";
+    const walletsActiveEl=$("#walletsActive");
+    if(walletsActiveEl){
+      walletsActiveEl.textContent=String(data.wallets_active ?? "—");
+    }
+
+    const list=$("#byStand");
+    list.innerHTML="";
     (data.ca_by_stand||[]).forEach(r=>{
-      const tr=document.createElement("tr");
-      const td1=document.createElement("td");
-      const td2=document.createElement("td");
-      td1.textContent=String(r.stand_name);
-      td2.textContent=euro(r.ca);
-      tr.appendChild(td1);
-      tr.appendChild(td2);
-      tbody.appendChild(tr);
+      const row=document.createElement("div");
+      row.className="a-row";
+      const left=document.createElement("div");
+      left.className="name";
+      left.textContent=String(r.stand_name);
+      const right=document.createElement("div");
+      right.className="value";
+      right.textContent=euro(r.ca);
+      row.appendChild(left);
+      row.appendChild(right);
+      list.appendChild(row);
     });
 
     $("#exportCsv").setAttribute("href",api.exportCsvUrl());
+
+    const hint=$("#exportHint");
+    if(hint){
+      hint.textContent=String(data.total_transactions)+" transactions disponibles";
+    }
     toast("OK.","ok");
   }
 

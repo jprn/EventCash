@@ -5,37 +5,98 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Admin</title>
     <link rel="stylesheet" href="/assets/css/app.css" />
+    <link rel="stylesheet" href="/assets/css/admin.css" />
   </head>
-  <body>
+  <body class="admin">
     <div class="container">
-      <div class="header">
-        <div>
-          <div class="title">Admin</div>
-          <div class="subtitle">Suivi des ventes</div>
+      <div class="a-hero">
+        <div class="a-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M4 19V5"/><path d="M4 19h16"/><path d="M8 17v-6"/><path d="M12 17V9"/><path d="M16 17v-3"/></svg>
         </div>
-        <div class="badge">Dashboard</div>
+        <div class="a-title">Dashboard Admin</div>
+        <p class="a-subtitle">Vue d'ensemble de l'événement</p>
       </div>
 
-      <div class="panel">
-        <div class="panel-body">
-          <div class="row">
-            <button id="refresh" class="btn" type="button">Rafraîchir</button>
-            <a id="exportCsv" class="btn ghost" href="#" download>Export CSV</a>
+      <div class="a-grid a-grid-4">
+        <div class="a-card">
+          <div class="a-card-body a-kpi">
+            <div class="meta">
+              <div class="k">Chiffre d'affaires</div>
+              <div class="v" id="totalCa">0.00€</div>
+            </div>
+            <div class="ico ca" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M12 6v12"/><path d="M8 9h7a3 3 0 0 1 0 6H8"/></svg>
+            </div>
           </div>
-          <div class="hr"></div>
-          <div class="grid grid-3">
-            <div class="kpi"><div class="k">CA total</div><div class="v" id="totalCa">0.00€</div></div>
-            <div class="kpi"><div class="k">Transactions</div><div class="v" id="totalTx">0</div></div>
-            <div class="kpi"><div class="k">Soldes restants (actifs)</div><div class="v" id="sumBalances">0.00€</div></div>
+        </div>
+
+        <div class="a-card">
+          <div class="a-card-body a-kpi">
+            <div class="meta">
+              <div class="k">Transactions</div>
+              <div class="v" id="totalTx">0</div>
+            </div>
+            <div class="ico tx" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M6 6h15l-2 7H7"/><path d="M7 13l-1 4h13"/><path d="M9 20a1 1 0 1 0 0-2"/><path d="M17 20a1 1 0 1 0 0-2"/></svg>
+            </div>
           </div>
-          <div class="hr"></div>
-          <div class="label">CA par stand</div>
-          <table class="table">
-            <thead><tr><th>Stand</th><th>CA</th></tr></thead>
-            <tbody id="byStand"></tbody>
-          </table>
-          <div style="height:12px"></div>
-          <div class="toast" id="toast" style="display:block">Prêt.</div>
+        </div>
+
+        <div class="a-card">
+          <div class="a-card-body a-kpi">
+            <div class="meta">
+              <div class="k">Soldes restants</div>
+              <div class="v" id="sumBalances">0.00€</div>
+            </div>
+            <div class="ico bal" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M3 7.5h18"/><path d="M4.5 7.5v11A2.5 2.5 0 0 0 7 21h10a2.5 2.5 0 0 0 2.5-2.5v-11"/></svg>
+            </div>
+          </div>
+        </div>
+
+        <div class="a-card">
+          <div class="a-card-body a-kpi">
+            <div class="meta">
+              <div class="k">Wallets actifs</div>
+              <div class="v" id="walletsActive">—</div>
+            </div>
+            <div class="ico wal" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 3-1.34 3-3"/><path d="M19 8V7a3 3 0 0 0-3-3H7a4 4 0 0 0 0 8h12"/><path d="M7 12h12v8H7z"/></svg>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="height:14px"></div>
+      <div class="a-grid a-grid-2">
+        <div class="a-card">
+          <div class="a-card-body">
+            <div class="a-section-title">
+              <svg viewBox="0 0 24 24"><path d="M7 10V7a5 5 0 0 1 10 0v3"/><path d="M6 10h12v10H6z"/></svg>
+              Chiffre d'affaires par stand
+            </div>
+            <div class="a-list" id="byStand"></div>
+          </div>
+        </div>
+
+        <div class="a-card">
+          <div class="a-card-body">
+            <div class="a-section-title">
+              <svg viewBox="0 0 24 24"><path d="M12 3v12"/><path d="M8 11l4 4 4-4"/><path d="M4 21h16"/></svg>
+              Export des données
+            </div>
+            <a id="exportCsv" class="a-btn" href="#" download>
+              <svg viewBox="0 0 24 24"><path d="M12 3v12"/><path d="M8 11l4 4 4-4"/><path d="M4 21h16"/></svg>
+              Exporter les transactions (CSV)
+            </a>
+            <div class="a-hint" id="exportHint">—</div>
+            <div style="height:12px"></div>
+            <button id="refresh" class="a-btn" type="button" style="background:rgba(255,255,255,.75);color:rgba(15,23,42,.85);border:1px solid rgba(15,23,42,.10);box-shadow:0 12px 26px rgba(15,23,42,.05)">
+              Rafraîchir
+            </button>
+            <div style="height:12px"></div>
+            <div class="a-toast" id="toast" style="display:block">Prêt.</div>
+          </div>
         </div>
       </div>
 

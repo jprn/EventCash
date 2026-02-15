@@ -5,49 +5,80 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Stand — Boutique</title>
     <link rel="stylesheet" href="/assets/css/app.css" />
+    <link rel="stylesheet" href="/assets/css/stand.css" />
   </head>
-  <body>
+  <body class="stand">
     <div class="container">
-      <div class="header">
-        <div>
-          <div class="title">Stand</div>
-          <div class="subtitle" id="standName"></div>
+      <div class="s-topbar">
+        <div class="s-brand">
+          <div class="logo" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M4 7h16"/><path d="M6 7v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V7"/></svg>
+          </div>
+          Cashless Event
         </div>
-        <div class="badge">Scan + débit</div>
+        <div class="s-nav" aria-label="Navigation">
+          <a href="/client/"><svg viewBox="0 0 24 24"><path d="M12 12a4 4 0 1 0-4-4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>Mon Wallet</a>
+          <a href="/recharge/"><svg viewBox="0 0 24 24"><path d="M12 5v14"/><path d="M5 12h14"/></svg>Recharge</a>
+          <a class="active" href="#"><svg viewBox="0 0 24 24"><path d="M6 7h12"/><path d="M6 12h12"/><path d="M6 17h12"/></svg>Stand</a>
+          <a href="/admin/"><svg viewBox="0 0 24 24"><path d="M12 3v18"/><path d="M3 12h18"/></svg>Admin</a>
+        </div>
       </div>
 
-      <div class="panel">
-        <div class="panel-body grid grid-2">
-          <div>
-            <div class="label">QR token</div>
-            <div class="row">
-              <input id="token" class="input" placeholder="Scanner / coller le token" />
-              <button id="lookup" class="btn" type="button">Charger</button>
-            </div>
-            <div class="hr"></div>
-            <div class="grid grid-3">
-              <div class="kpi"><div class="k">Solde</div><div class="v" id="walletBalance">0.00</div></div>
-              <div class="kpi"><div class="k">Statut</div><div class="v" id="walletActive"></div></div>
-              <div class="kpi"><div class="k">Wallet</div><div class="v mono" id="walletId"></div></div>
-            </div>
-            <div class="hr"></div>
-            <div class="label">Produits</div>
-            <div class="row" id="products"></div>
-            <div class="hr"></div>
-            <div class="row">
-              <button id="debit" class="btn primary" type="button">Valider paiement</button>
-            </div>
-            <div style="height:10px"></div>
-            <div class="toast" id="toast" style="display:block">Prêt.</div>
-            <audio id="beep" src="data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAESsAACJWAAACABAAZGF0YQAAAAA=" preload="auto"></audio>
-          </div>
+      <div class="s-hero">
+        <div class="s-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M7 10V7a5 5 0 0 1 10 0v3"/><path d="M6 10h12v10H6z"/></svg>
+        </div>
+        <div class="s-title">Point de Vente</div>
+        <p class="s-subtitle" id="standName"></p>
+      </div>
 
-          <div>
-            <div class="label">Aide</div>
-            <div class="toast">1) Colle le token (ou scan via app scan) 2) Choisis un produit 3) Valide.</div>
-            <div style="height:12px"></div>
-            <div class="toast">Temps cible &lt; 5s : précharge produits + un seul appel débit.</div>
+      <div class="s-split">
+        <div class="s-card">
+          <div class="s-card-body">
+            <div class="s-section-title">Sélection du stand</div>
+            <select class="s-select" disabled>
+              <option>Boutique</option>
+            </select>
           </div>
+        </div>
+
+        <div class="s-card">
+          <div class="s-card-body">
+            <div class="s-section-title">Scanner le QR Code du client</div>
+            <button id="scan" class="s-btn" type="button">
+              <svg viewBox="0 0 24 24"><path d="M4 7V5a1 1 0 0 1 1-1h2"/><path d="M20 7V5a1 1 0 0 0-1-1h-2"/><path d="M4 17v2a1 1 0 0 0 1 1h2"/><path d="M20 17v2a1 1 0 0 1-1 1h-2"/><path d="M7 12h10"/></svg>
+              Scanner le QR Code
+            </button>
+            <div class="s-divider"></div>
+            <button class="s-btn secondary" type="button" onclick="document.getElementById('token').focus()">
+              <svg viewBox="0 0 24 24"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h10"/></svg>
+              Saisie manuelle
+            </button>
+            <div style="height:12px"></div>
+            <input id="token" class="s-input" placeholder="Coller le token" />
+            <div style="height:12px"></div>
+            <button id="lookup" class="s-btn secondary" type="button">Charger</button>
+          </div>
+        </div>
+      </div>
+
+      <div style="height:16px"></div>
+      <div class="s-kpis">
+        <div class="s-kpi"><div class="k">Solde</div><div class="v" id="walletBalance">0.00</div></div>
+        <div class="s-kpi"><div class="k">Statut</div><div class="v" id="walletActive"></div></div>
+        <div class="s-kpi"><div class="k">Wallet</div><div class="v" style="font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace" id="walletId"></div></div>
+      </div>
+
+      <div style="height:16px"></div>
+      <div class="s-card">
+        <div class="s-card-body">
+          <div class="s-section-title">Produits</div>
+          <div class="s-products" id="products"></div>
+          <div class="s-divider"></div>
+          <button id="debit" class="s-btn" type="button">Valider paiement</button>
+          <div style="height:12px"></div>
+          <div class="s-toast" id="toast" style="display:block">Prêt.</div>
+          <audio id="beep" src="data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAESsAACJWAAACABAAZGF0YQAAAAA=" preload="auto"></audio>
         </div>
       </div>
 
