@@ -32,3 +32,19 @@ body.admin .container{max-width:1100px}
 .a-toast{padding:12px 14px;border-radius:14px;border:1px solid rgba(15,23,42,.10);background:rgba(255,255,255,.7);color:rgba(15,23,42,.85)}
 .a-toast.ok{border-color:rgba(34,197,94,.35)}
 .a-toast.err{border-color:rgba(239,68,68,.4)}
+
+.a-walletHeader{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px}
+.a-search{display:flex;align-items:center;gap:10px;border:1px solid rgba(15,23,42,.10);background:#fff;border-radius:12px;padding:10px 12px;box-shadow:0 12px 26px rgba(15,23,42,.05)}
+.a-search svg{width:16px;height:16px;stroke:rgba(15,23,42,.45);stroke-width:2;fill:none}
+.a-search input{border:0;outline:none;font-size:14px;min-width:240px;width:100%;background:transparent}
+.a-table{width:100%;border-collapse:separate;border-spacing:0;overflow:hidden;border-radius:14px;border:1px solid rgba(15,23,42,.10)}
+.a-table th,.a-table td{padding:12px 12px;border-bottom:1px solid rgba(15,23,42,.08);text-align:left;font-size:13px;vertical-align:middle}
+.a-table th{background:rgba(15,23,42,.03);color:rgba(15,23,42,.55);font-weight:1000}
+.a-table tr:last-child td{border-bottom:0}
+.a-token{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;font-size:12px;color:rgba(15,23,42,.75);max-width:420px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.a-badge{display:inline-flex;align-items:center;gap:8px;padding:6px 10px;border-radius:999px;font-weight:1000;font-size:12px;border:1px solid rgba(15,23,42,.10)}
+.a-badge.ok{background:rgba(34,197,94,.12);border-color:rgba(34,197,94,.22);color:rgba(22,163,74,1)}
+.a-badge.off{background:rgba(148,163,184,.18);border-color:rgba(148,163,184,.25);color:rgba(100,116,139,1)}
+.a-action{appearance:none;border:0;border-radius:10px;min-height:36px;padding:8px 12px;font-weight:1000;font-size:12px;cursor:pointer}
+.a-action.danger{background:rgba(239,68,68,.92);color:#fff}
+.a-action:disabled{opacity:.5;cursor:not-allowed}
