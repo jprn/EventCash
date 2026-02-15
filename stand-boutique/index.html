@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Stand — Boutique</title>
+    <link rel="stylesheet" href="/assets/css/app.css" />
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <div>
+          <div class="title">Stand</div>
+          <div class="subtitle" id="standName"></div>
+        </div>
+        <div class="badge">Scan + débit</div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-body grid grid-2">
+          <div>
+            <div class="label">QR token</div>
+            <div class="row">
+              <input id="token" class="input" placeholder="Scanner / coller le token" />
+              <button id="lookup" class="btn" type="button">Charger</button>
+            </div>
+            <div class="hr"></div>
+            <div class="grid grid-3">
+              <div class="kpi"><div class="k">Solde</div><div class="v" id="walletBalance">0.00</div></div>
+              <div class="kpi"><div class="k">Statut</div><div class="v" id="walletActive"></div></div>
+              <div class="kpi"><div class="k">Wallet</div><div class="v mono" id="walletId"></div></div>
+            </div>
+            <div class="hr"></div>
+            <div class="label">Produits</div>
+            <div class="row" id="products"></div>
+            <div class="hr"></div>
+            <div class="row">
+              <button id="debit" class="btn primary" type="button">Valider paiement</button>
+            </div>
+            <div style="height:10px"></div>
+            <div class="toast" id="toast" style="display:block">Prêt.</div>
+            <audio id="beep" src="data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAESsAACJWAAACABAAZGF0YQAAAAA=" preload="auto"></audio>
+          </div>
+
+          <div>
+            <div class="label">Aide</div>
+            <div class="toast">1) Colle le token (ou scan via app scan) 2) Choisis un produit 3) Valide.</div>
+            <div style="height:12px"></div>
+            <div class="toast">Temps cible &lt; 5s : précharge produits + un seul appel débit.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer">Templates — renomme ce dossier sur Hostinger en URL secrète.</div>
+    </div>
+
+    <script>window.EVENCASH_STAND_NAME="Boutique";</script>
+    <script src="/assets/js/config.js"></script>
+    <script src="/assets/js/api.js"></script>
+    <script src="/assets/js/stand.js"></script>
+  </body>
+</html>

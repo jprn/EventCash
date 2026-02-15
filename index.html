@@ -4,9 +4,48 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>EvenCash</title>
+    <link rel="stylesheet" href="/assets/css/app.css" />
   </head>
   <body>
-    <h1>EvenCash114</h1>
-    <p>It works.</p>
+    <div class="container">
+      <div class="header">
+        <div>
+          <div class="title">EvenCash</div>
+          <div class="subtitle">Cashless événement — templates Hostinger</div>
+        </div>
+        <div class="badge">MVP</div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-body grid grid-2">
+          <div>
+            <div class="label">Interfaces (templates)</div>
+            <div class="row">
+              <a class="btn" href="/recharge/">Recharge</a>
+              <a class="btn" href="/stand-restauration/">Stand Restauration</a>
+              <a class="btn" href="/stand-buvette/">Stand Buvette</a>
+              <a class="btn" href="/stand-boutique/">Stand Boutique</a>
+              <a class="btn" href="/admin/">Admin</a>
+              <a class="btn" href="/client/">Client</a>
+            </div>
+            <div class="hr"></div>
+            <div class="toast" style="display:block">
+              Sur Hostinger : renomme chaque dossier en URL secrète (16 caractères).
+            </div>
+          </div>
+
+          <div>
+            <div class="label">Checklist Hostinger</div>
+            <div class="toast" style="display:block">
+              1) Importer <span class="mono">db/schema.sql</span> dans MySQL.
+              <br />2) Configurer la DB dans <span class="mono">api/config.php</span>.
+              <br />3) Mettre la clé dans <span class="mono">assets/js/config.js</span> (API_KEY).
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer">Note : ne pousse pas les URLs secrètes si ton repo est public.</div>
+    </div>
   </body>
 </html>

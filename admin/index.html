@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Admin</title>
+    <link rel="stylesheet" href="/assets/css/app.css" />
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <div>
+          <div class="title">Admin</div>
+          <div class="subtitle">Suivi des ventes</div>
+        </div>
+        <div class="badge">Dashboard</div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-body">
+          <div class="row">
+            <button id="refresh" class="btn" type="button">Rafraîchir</button>
+            <a id="exportCsv" class="btn ghost" href="#" download>Export CSV</a>
+          </div>
+          <div class="hr"></div>
+          <div class="grid grid-3">
+            <div class="kpi"><div class="k">CA total</div><div class="v" id="totalCa">0.00€</div></div>
+            <div class="kpi"><div class="k">Transactions</div><div class="v" id="totalTx">0</div></div>
+            <div class="kpi"><div class="k">Soldes restants (actifs)</div><div class="v" id="sumBalances">0.00€</div></div>
+          </div>
+          <div class="hr"></div>
+          <div class="label">CA par stand</div>
+          <table class="table">
+            <thead><tr><th>Stand</th><th>CA</th></tr></thead>
+            <tbody id="byStand"></tbody>
+          </table>
+          <div style="height:12px"></div>
+          <div class="toast" id="toast" style="display:block">Prêt.</div>
+        </div>
+      </div>
+
+      <div class="footer">Templates — renomme ce dossier sur Hostinger en URL secrète.</div>
+    </div>
+
+    <script src="/assets/js/config.js"></script>
+    <script src="/assets/js/api.js"></script>
+    <script src="/assets/js/admin.js"></script>
+  </body>
+</html>

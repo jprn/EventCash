@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Client</title>
+    <link rel="stylesheet" href="/assets/css/app.css" />
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <div>
+          <div class="title">Client</div>
+          <div class="subtitle">Consulter le solde</div>
+        </div>
+        <div class="badge">Lecture</div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-body grid grid-2">
+          <div>
+            <div class="label">QR token</div>
+            <div class="row">
+              <input id="token" class="input" placeholder="Scanner / coller le token" />
+              <button id="lookup" class="btn" type="button">Voir</button>
+            </div>
+            <div class="hr"></div>
+            <div class="grid grid-3">
+              <div class="kpi"><div class="k">Solde</div><div class="v" id="balance">0.00€</div></div>
+              <div class="kpi"><div class="k">Statut</div><div class="v" id="active"></div></div>
+              <div class="kpi"><div class="k">Wallet</div><div class="v mono" id="walletId"></div></div>
+            </div>
+            <div style="height:12px"></div>
+            <div class="toast" id="toast" style="display:block">Prêt.</div>
+          </div>
+          <div>
+            <div class="label">Info</div>
+            <div class="toast">Le QR contient uniquement le token. Le solde est toujours lu en base.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer">Templates — renomme ce dossier sur Hostinger en URL secrète.</div>
+    </div>
+
+    <script src="/assets/js/config.js"></script>
+    <script src="/assets/js/api.js"></script>
+    <script src="/assets/js/client.js"></script>
+  </body>
+</html>

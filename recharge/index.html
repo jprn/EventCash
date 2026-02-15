@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Recharge</title>
+    <link rel="stylesheet" href="/assets/css/app.css" />
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <div>
+          <div class="title">Recharge</div>
+          <div class="subtitle">Création wallet + recharge sur place</div>
+        </div>
+        <div class="badge">Interface caisse</div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-body grid grid-2">
+          <div>
+            <div class="label">Montant</div>
+            <div class="row">
+              <button class="btn small" type="button" data-amt="10">10€</button>
+              <button class="btn small" type="button" data-amt="20">20€</button>
+              <button class="btn small" type="button" data-amt="30">30€</button>
+            </div>
+            <div style="height:10px"></div>
+            <input id="amount" class="input" inputmode="decimal" placeholder="Montant libre" />
+            <div style="height:12px"></div>
+            <div class="row">
+              <button id="createWallet" class="btn primary" type="button">Créer Wallet</button>
+              <button id="credit" class="btn" type="button">Recharger</button>
+              <button id="printQr" class="btn ghost" type="button">Imprimer QR</button>
+            </div>
+            <div class="hr"></div>
+            <div class="kpi">
+              <div class="k">Solde</div>
+              <div class="v" id="walletBalance">0.00</div>
+            </div>
+            <div style="height:10px"></div>
+            <div class="toast" id="toast" style="display:block">Prêt.</div>
+          </div>
+
+          <div>
+            <div class="label">QR</div>
+            <div class="qr-wrap">
+              <div class="qr" id="qr"></div>
+              <div>
+                <div class="label">Wallet ID</div>
+                <div class="mono" id="walletId"></div>
+                <div style="height:10px"></div>
+                <div class="label">Token</div>
+                <div class="mono" id="walletToken"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer">Templates — renomme ce dossier sur Hostinger en URL secrète.</div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+    <script src="/assets/js/config.js"></script>
+    <script src="/assets/js/api.js"></script>
+    <script src="/assets/js/recharge.js"></script>
+  </body>
+</html>

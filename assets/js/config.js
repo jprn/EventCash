@@ -1,0 +1,1 @@
+window.EVENCASH_CONFIG={API_BASE:"/api",API_KEY:""};
