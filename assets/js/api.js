@@ -20,19 +20,24 @@ window.EvenCashApi=(function(){
     if(ct.includes("application/json")){
       const data=await res.json();
       if(!res.ok){
-        const err=new Error(data&&data.error?data.error:"request_failed");
+        const err=new Error(data&&data.error?data.error:("http_"+res.status));
         err.data=data;
         err.status=res.status;
         throw err;
       }
       return data;
     }
+
+    const text=await res.text();
     if(!res.ok){
-      const err=new Error("request_failed");
+      const snippet=String(text||"").trim().slice(0,200);
+      const msg=snippet?(`http_${res.status}: `+snippet):("http_"+res.status);
+      const err=new Error(msg);
       err.status=res.status;
+      err.data={raw:snippet};
       throw err;
     }
-    return await res.text();
+    return text;
   }
   return {
     walletCreate:()=>request("wallet_create.php",{method:"POST",body:{}}),
