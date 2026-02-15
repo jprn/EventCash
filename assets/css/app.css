@@ -36,9 +36,9 @@ a{color:inherit}
 
 body .topbar{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:14px 0 4px}
 body .brand{display:flex;align-items:center;gap:10px;font-weight:1000;color:rgba(15,23,42,.90)}
-body .brand .logo{width:34px;height:34px;border-radius:10px;background:linear-gradient(180deg,#4f46e5,#4338ca);display:flex;align-items:center;justify-content:center;box-shadow:0 14px 30px rgba(79,70,229,.20)}
+body .brand .logo{width:34px;height:34px;border-radius:10px;background:linear-gradient(180deg,#7c3aed,#6d28d9);display:flex;align-items:center;justify-content:center;box-shadow:0 14px 30px rgba(124,58,237,.20)}
 body .brand .logo svg{width:18px;height:18px;stroke:#fff;stroke-width:2;fill:none}
 body .nav{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end}
-body .nav a{display:inline-flex;align-items:center;gap:8px;padding:10px 12px;border-radius:12px;border:1px solid transparent;text-decoration:none;color:rgba(15,23,42,.70);font-weight:900;background:transparent}
-body .nav a.active{background:rgba(79,70,229,.12);border-color:rgba(79,70,229,.18);color:rgba(79,70,229,1)}
+body .nav a{display:inline-flex;align-items:center;gap:8px;padding:10px 12px;border-radius:12px;border:1px solid transparent;text-decoration:none;color:rgba(15,23,42,.75);font-weight:900}
+body .nav a.active{background:rgba(124,58,237,.12);border-color:rgba(124,58,237,.18);color:rgba(124,58,237,1)}
 body .nav svg{width:16px;height:16px;stroke:currentColor;stroke-width:2;fill:none}
