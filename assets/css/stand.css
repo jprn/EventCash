@@ -28,9 +28,30 @@ body.stand .container{max-width:1040px}
 .s-split{display:grid;grid-template-columns:1fr;gap:16px}
 @media(min-width:980px){.s-split{grid-template-columns:1fr 1fr;align-items:start}.s-split.single{grid-template-columns:1fr}}
 .s-divider{height:1px;background:rgba(15,23,42,.10);margin:14px 0}
-.s-products{display:flex;flex-wrap:wrap;gap:10px}
-.s-chip{appearance:none;border:1px solid var(--s-border);background:rgba(255,255,255,.85);border-radius:14px;min-height:48px;padding:10px 12px;font-weight:1000;cursor:pointer;box-shadow:0 10px 20px rgba(15,23,42,.04)}
-.s-chip.active{background:rgba(124,58,237,.12);border-color:rgba(124,58,237,.18);color:rgba(124,58,237,1)}
+.s-balance{border-radius:14px;border:2px solid rgba(34,197,94,.55);background:#fff;box-shadow:0 18px 44px rgba(15,23,42,.10);padding:18px;display:flex;align-items:center;justify-content:space-between;gap:14px}
+.s-balanceLeft{display:flex;align-items:center;gap:14px}
+.s-balanceIcon{width:44px;height:44px;border-radius:999px;background:rgba(34,197,94,.12);display:flex;align-items:center;justify-content:center}
+.s-balanceIcon svg{width:22px;height:22px;stroke:rgba(22,163,74,1);stroke-width:2;fill:none}
+.s-balanceK{font-size:13px;color:rgba(15,23,42,.60);font-weight:1000}
+.s-balanceV{font-size:34px;font-weight:1200;color:rgba(22,163,74,1);margin-top:2px}
+.s-balanceClose{appearance:none;border:0;background:transparent;color:rgba(15,23,42,.55);font-size:24px;line-height:1;cursor:pointer;padding:8px 10px;border-radius:12px}
+.s-balanceClose:hover{background:rgba(15,23,42,.04)}
+
+.s-productList{display:flex;flex-direction:column;gap:12px;margin-top:4px}
+.s-prodRow{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:14px;border-radius:14px;background:rgba(15,23,42,.03);border:1px solid rgba(15,23,42,.06)}
+.s-prodName{font-weight:1100;color:rgba(15,23,42,.92)}
+.s-prodPrice{margin-top:6px;font-weight:1200;color:rgba(124,58,237,1);font-size:22px}
+.s-prodRight{display:flex;align-items:center;gap:10px}
+.s-prodQty{width:76px;min-height:44px;border-radius:12px;border:1px solid rgba(15,23,42,.10);padding:8px 10px;font-size:16px;font-weight:1000;outline:none;text-align:center;background:#fff}
+.s-prodQty:focus{border-color:rgba(124,58,237,.35);box-shadow:0 0 0 4px rgba(124,58,237,.14)}
+.s-buy{appearance:none;border:0;border-radius:12px;min-height:44px;min-width:120px;padding:0 14px;background:linear-gradient(180deg,var(--s-primary),var(--s-primary2));color:#fff;font-weight:1100;font-size:16px;cursor:pointer;box-shadow:0 14px 30px rgba(124,58,237,.20)}
+.s-buy:active{transform:translateY(1px)}
+
+.s-products{display:none}
+.s-chip{display:none}
+.s-qtyRow{display:none}
+.s-qtyLabel{display:none}
+.s-qty{display:none}
 .s-kpis{display:grid;grid-template-columns:1fr;gap:12px}
 @media(min-width:980px){.s-kpis{grid-template-columns:1fr 1fr 1fr}}
 .s-kpi{border:1px solid var(--s-border);background:linear-gradient(180deg,#fff,rgba(255,255,255,.75));border-radius:16px;padding:14px;box-shadow:0 12px 26px rgba(15,23,42,.06)}

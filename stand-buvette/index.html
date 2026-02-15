@@ -56,21 +56,24 @@
       </div>
 
       <div style="height:16px"></div>
-      <div class="s-kpis">
-        <div class="s-kpi"><div class="k">Solde</div><div class="v" id="walletBalance">0.00</div></div>
-        <div class="s-kpi"><div class="k">Statut</div><div class="v" id="walletActive"></div></div>
-        <div class="s-kpi"><div class="k">Wallet</div><div class="v" style="font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace" id="walletId"></div></div>
+      <div id="balanceBanner" class="s-balance" style="display:none">
+        <div class="s-balanceLeft">
+          <div class="s-balanceIcon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M7 10V7a5 5 0 0 1 10 0v3"/><path d="M6 10h12v10H6z"/></svg>
+          </div>
+          <div>
+            <div class="s-balanceK">Solde disponible</div>
+            <div class="s-balanceV" id="walletBalance">0.00€</div>
+          </div>
+        </div>
+        <button id="balanceClose" class="s-balanceClose" type="button" aria-label="Fermer">×</button>
       </div>
 
       <div style="height:16px"></div>
       <div class="s-card">
         <div class="s-card-body">
-          <div class="s-section-title">Produits</div>
-          <div class="s-products" id="products"></div>
-          <div class="s-divider"></div>
-          <button id="debit" class="s-btn" type="button">Valider paiement</button>
-          <div style="height:12px"></div>
-          <div class="s-toast" id="toast" style="display:block">Prêt.</div>
+          <div class="s-section-title">Produits disponibles</div>
+          <div class="s-productList" id="products"></div>
           <audio id="beep" src="data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAESsAACJWAAACABAAZGF0YQAAAAA=" preload="auto"></audio>
         </div>
       </div>

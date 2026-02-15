@@ -2,14 +2,13 @@
   const $=s=>document.querySelector(s);
   const api=window.EvenCashApi;
   const standName=String(window.EVENCASH_STAND_NAME||"");
-  const state={wallet:null,products:[],selected:null,token:""};
+  const state={wallet:null,products:[],token:""};
   let currentModal=null;
 
   function toast(msg,type){
-    const el=$("#toast");
-    el.className="toast "+(type||"");
-    el.textContent=msg;
-    el.style.display="block";
+    // legacy: toast area removed from UI
+    void msg;
+    void type;
   }
 
   function closeModal(){
@@ -86,23 +85,68 @@
 
   function setWallet(w){
     state.wallet=w;
-    $("#walletId").textContent=w?String(w.id||""):"";
-    $("#walletBalance").textContent=w?String(w.balance||"0.00"):"0.00";
-    $("#walletActive").textContent=w?(String(w.is_active)==="1"?"actif":"inactif"):"";
+    const balEl=$("#walletBalance");
+    if(balEl){
+      const v=w?String(w.balance||"0.00")+"€":"0.00€";
+      balEl.textContent=v;
+    }
+    const banner=$("#balanceBanner");
+    if(banner){
+      banner.style.display=w?'flex':'none';
+    }
+  }
+
+  function resetForm(){
+    state.token="";
+    setWallet(null);
+    const tokenInput=$("#token");
+    if(tokenInput){
+      tokenInput.value="";
+      tokenInput.focus();
+    }
+    renderProducts();
   }
 
   function renderProducts(){
     const box=$("#products");
     box.innerHTML="";
-    state.products.forEach(p=>{
-      const btn=document.createElement("button");
-      btn.type="button";
-      const isActive=state.selected&&state.selected.id===p.id;
-      const useNew=document.body && document.body.classList && document.body.classList.contains('stand');
-      btn.className=useNew?("s-chip "+(isActive?"active":"")):("btn small "+(isActive?"primary":""));
-      btn.textContent=p.name+" — "+p.price+"€";
-      btn.addEventListener("click",()=>{state.selected=p;renderProducts();});
-      box.appendChild(btn);
+    (state.products||[]).forEach(p=>{
+      const row=document.createElement('div');
+      row.className='s-prodRow';
+
+      const left=document.createElement('div');
+      const name=document.createElement('div');
+      name.className='s-prodName';
+      name.textContent=String(p.name);
+      const price=document.createElement('div');
+      price.className='s-prodPrice';
+      price.textContent=String(p.price)+"€";
+      left.appendChild(name);
+      left.appendChild(price);
+
+      const right=document.createElement('div');
+      right.className='s-prodRight';
+
+      const qty=document.createElement('input');
+      qty.type='number';
+      qty.min='1';
+      qty.step='1';
+      qty.value='1';
+      qty.className='s-prodQty';
+      qty.setAttribute('aria-label','Quantité');
+
+      const buy=document.createElement('button');
+      buy.type='button';
+      buy.className='s-buy';
+      buy.textContent='Acheter';
+      buy.addEventListener('click',()=>buyProduct(p, qty));
+
+      right.appendChild(qty);
+      right.appendChild(buy);
+
+      row.appendChild(left);
+      row.appendChild(right);
+      box.appendChild(row);
     });
   }
 
@@ -123,51 +167,69 @@
     toast("Wallet chargé.","ok");
   }
 
-  async function debit(){
-    if(!state.token){throw new Error("missing_token");}
-    if(!state.selected){throw new Error("missing_product");}
-    const amount=Number(String(state.selected.price).replace(",","."));
-    showModal({
-      title:'Confirmer le paiement',
-      message:'Produit : '+state.selected.name+' — '+String(state.selected.price)+'€',
-      actions:[
-        {label:'Refuser',kind:'danger',onClick:({close})=>{close();showModal({title:'Paiement refusé',message:'Indiquez la raison du refus.',variant:'error',includeReason:true,actions:[
-          {label:'Annuler',kind:'neutral',onClick:({close:cl})=>cl()},
-          {label:'Confirmer le refus',kind:'danger',onClick:({close:cl,reason})=>{
-            cl();
-            const r=reason||'refusé';
-            toast('Refus: '+r,'err');
-            showModal({title:'Refus enregistré',message:r,variant:'error',actions:[{label:'OK',kind:'neutral',onClick:({close:c})=>c()}]});
-          }}
-        ]});}},
-        {label:'Valider',kind:'primary',onClick:async ({close})=>{
-          try{
-            toast('Débit…');
-            const data=await api.walletDebit(state.token,amount,state.selected.name,standName);
-            $("#walletBalance").textContent=String(data.balance);
-            toast('Paiement OK.','ok');
-            close();
-            showModal({title:'Paiement validé',message:'Nouveau solde : '+String(data.balance)+'€',variant:'success',actions:[{label:'OK',kind:'neutral',onClick:({close:c})=>c()}]});
-            const audio=$("#beep");
-            if(audio&&typeof audio.play==="function"){
-              audio.currentTime=0;
-              audio.play().catch(()=>{});
+  function qtyFromEl(el){
+    const raw=el?String(el.value||"").trim():"1";
+    const n=Math.floor(Number(raw));
+    if(!Number.isFinite(n) || n<1){
+      throw new Error("invalid_qty");
+    }
+    return n;
+  }
+
+  function buyProduct(p, qtyEl){
+    try{
+      if(!state.token){
+        showModal({title:'Wallet manquant',message:'Scannez ou collez le token du client puis cliquez Charger.',variant:'error',actions:[{label:'OK',kind:'neutral',onClick:({close})=>close()}]});
+        return;
+      }
+      const qty=qtyFromEl(qtyEl);
+      const unit=Number(String(p.price).replace(",","."));
+      const amount=Math.round(unit*qty*100)/100;
+
+      showModal({
+        title:'Confirmer le paiement',
+        message:'Produit : '+String(p.name)+' — '+String(p.price)+'€\nQuantité : '+String(qty)+'\nTotal : '+String(amount.toFixed(2))+'€',
+        actions:[
+          {label:'Refuser',kind:'danger',onClick:({close})=>{close();showModal({title:'Paiement refusé',message:'Indiquez la raison du refus.',variant:'error',includeReason:true,actions:[
+            {label:'Annuler',kind:'neutral',onClick:({close:cl})=>cl()},
+            {label:'Confirmer le refus',kind:'danger',onClick:({close:cl,reason})=>{
+              cl();
+              const r=reason||'refusé';
+              showModal({title:'Refus enregistré',message:r,variant:'error',actions:[{label:'OK',kind:'neutral',onClick:({close:c})=>c()}]});
+            }}
+          ]});}},
+          {label:'Valider',kind:'primary',onClick:async ({close})=>{
+            try{
+              const data=await api.walletDebit(state.token,amount,String(p.name),standName);
+              setWallet({...(state.wallet||{}),balance:data.balance,is_active:1});
+              close();
+              showModal({title:'Paiement validé',message:'Nouveau solde : '+String(data.balance)+'€',variant:'success',actions:[{label:'OK',kind:'neutral',onClick:({close:c})=>c()}]});
+              const audio=$("#beep");
+              if(audio&&typeof audio.play==="function"){
+                audio.currentTime=0;
+                audio.play().catch(()=>{});
+              }
+              resetForm();
+            }catch(e){
+              close();
+              showModal({title:'Paiement refusé',message:String(e.message||'Erreur'),variant:'error',actions:[{label:'OK',kind:'neutral',onClick:({close:c})=>c()}]});
             }
-          }catch(e){
-            close();
-            toast(e.message,'err');
-            showModal({title:'Paiement refusé',message:String(e.message||'Erreur'),variant:'error',actions:[{label:'OK',kind:'neutral',onClick:({close:c})=>c()}]});
-          }
-        }},
-      ]
-    });
+          }},
+        ]
+      });
+    } catch(e) {
+      showModal({title:'Erreur',message:String(e.message||e),variant:'error',actions:[{label:'OK',kind:'neutral',onClick:({close})=>close()}]});
+    }
   }
 
   function init(){
     $("#standName").textContent=standName;
     $("#lookup").addEventListener("click",()=>lookupToken().catch(e=>toast(e.message,"err")));
-    $("#debit").addEventListener("click",()=>debit().catch(e=>toast(e.message,"err")));
     $("#token").addEventListener("keydown",e=>{if(e.key==="Enter"){lookupToken().catch(er=>toast(er.message,"err"));}});
+    const close=$("#balanceClose");
+    if(close){
+      close.addEventListener('click',()=>setWallet(null));
+    }
     loadProducts().catch(e=>toast(e.message,"err"));
     toast("Prêt.");
   }
