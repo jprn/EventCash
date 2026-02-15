@@ -5,6 +5,34 @@
   const state={wallet:null,products:[],token:""};
   let currentModal=null;
 
+  async function loadScript(src){
+    return new Promise((resolve,reject)=>{
+      const s=document.createElement('script');
+      s.src=src;
+      s.async=true;
+      s.onload=()=>resolve();
+      s.onerror=()=>reject(new Error('failed:'+src));
+      document.head.appendChild(s);
+    });
+  }
+
+  async function ensureJsQR(){
+    if(typeof window.jsQR === 'function') return true;
+    const sources=[
+      'https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js',
+      'https://unpkg.com/jsqr@1.4.0/dist/jsQR.js',
+    ];
+    for(const src of sources){
+      try{
+        await loadScript(src);
+        if(typeof window.jsQR === 'function') return true;
+      }catch(_e){
+        // continue
+      }
+    }
+    return false;
+  }
+
   function toast(msg,type){
     // legacy: toast area removed from UI
     void msg;
@@ -87,10 +115,8 @@
     if(!('mediaDevices' in navigator) || !navigator.mediaDevices.getUserMedia){
       throw new Error('camera_unavailable');
     }
-    if(typeof window.BarcodeDetector !== 'function'){
-      throw new Error('barcode_detector_unavailable');
-    }
-    const detector=new window.BarcodeDetector({formats:['qr_code']});
+    const hasBarcodeDetector=(typeof window.BarcodeDetector === 'function');
+    const detector=hasBarcodeDetector ? new window.BarcodeDetector({formats:['qr_code']}) : null;
 
     const overlay=document.createElement('div');
     overlay.style.cssText='position:fixed;inset:0;background:rgba(15,23,42,.55);display:flex;align-items:center;justify-content:center;padding:16px;z-index:9999';
@@ -147,12 +173,40 @@
       const tick=async ()=>{
         try{
           if(video.readyState>=2){
-            const codes=await detector.detect(video);
-            if(codes && codes[0] && codes[0].rawValue){
-              const val=String(codes[0].rawValue||'').trim();
-              cleanup();
-              resolve(val);
-              return;
+            if(detector){
+              const codes=await detector.detect(video);
+              if(codes && codes[0] && codes[0].rawValue){
+                const val=String(codes[0].rawValue||'').trim();
+                cleanup();
+                resolve(val);
+                return;
+              }
+            } else {
+              const ok=await ensureJsQR();
+              if(!ok){
+                cleanup();
+                reject(new Error('barcode_detector_unavailable'));
+                return;
+              }
+              const w=video.videoWidth||0;
+              const h=video.videoHeight||0;
+              if(w>0 && h>0){
+                const canvas=document.createElement('canvas');
+                canvas.width=w;
+                canvas.height=h;
+                const ctx=canvas.getContext('2d',{willReadFrequently:true});
+                if(ctx){
+                  ctx.drawImage(video,0,0,w,h);
+                  const img=ctx.getImageData(0,0,w,h);
+                  const code=window.jsQR(img.data,w,h,{inversionAttempts:'attemptBoth'});
+                  if(code && code.data){
+                    const val=String(code.data||'').trim();
+                    cleanup();
+                    resolve(val);
+                    return;
+                  }
+                }
+              }
             }
           }
           raf=requestAnimationFrame(tick);

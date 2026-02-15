@@ -33,8 +33,9 @@
         wrap.appendChild(canvas);
         await window.QRCode.toCanvas(canvas,value,{
           width:220,
-          margin:1,
-          color:{dark:'#16a34a',light:'#ffffff'}
+          margin:2,
+          errorCorrectionLevel:'H',
+          color:{dark:'#000000',light:'#ffffff'}
         });
         return;
       }
@@ -47,7 +48,7 @@
     img.height=220;
     img.loading='lazy';
     img.referrerPolicy='no-referrer';
-    img.src='https://api.qrserver.com/v1/create-qr-code/?size=220x220&color=22-163-74&bgcolor=255-255-255&data='+encodeURIComponent(value);
+    img.src='https://api.qrserver.com/v1/create-qr-code/?size=220x220&color=0-0-0&bgcolor=255-255-255&margin=2&ecc=H&data='+encodeURIComponent(value);
     wrap.appendChild(img);
   }
 
@@ -127,7 +128,7 @@
     el.innerHTML="";
     if(!token){return;}
     const value=String(token);
-    const dark=String(darkColor||'#16a34a');
+    const dark=String(darkColor||'#000000');
     try{
       if(typeof window.ensureQRCodeLib === 'function'){
         await window.ensureQRCodeLib();
@@ -137,7 +138,8 @@
         el.appendChild(canvas);
         await window.QRCode.toCanvas(canvas,value,{
           width:size||240,
-          margin:1,
+          margin:2,
+          errorCorrectionLevel:'H',
           color:{dark:dark,light:'#ffffff'}
         });
         return;
@@ -152,8 +154,8 @@
     img.height=s;
     img.loading='lazy';
     img.referrerPolicy='no-referrer';
-    const colorParam=(dark.toLowerCase()==='#000000'||dark.toLowerCase()==='black')?'0-0-0':'22-163-74';
-    img.src='https://api.qrserver.com/v1/create-qr-code/?size='+encodeURIComponent(String(s)+'x'+String(s))+'&color='+colorParam+'&bgcolor=255-255-255&data='+encodeURIComponent(value);
+    const colorParam=(dark.toLowerCase()==='#000000'||dark.toLowerCase()==='black')?'0-0-0':'0-0-0';
+    img.src='https://api.qrserver.com/v1/create-qr-code/?size='+encodeURIComponent(String(s)+'x'+String(s))+'&color='+colorParam+'&bgcolor=255-255-255&margin=2&ecc=H&data='+encodeURIComponent(value);
     el.appendChild(img);
   }
 
@@ -171,13 +173,13 @@
       bal.textContent=String(state.wallet.balance||"0.00")+"€";
     }
 
-    await renderQrInto($("#payQr"), state.wallet.qr_token, 260, '#16a34a');
+    await renderQrInto($("#payQr"), state.wallet.qr_token, 280, '#000000');
 
     const cfg=(window.EVENCASH_CONFIG||{});
     const clientPath=String(cfg.CLIENT_PATH||"/client/");
     const clientUrl=new URL(clientPath, window.location.origin);
     clientUrl.searchParams.set('token', String(state.wallet.qr_token||""));
-    await renderQrInto($("#phoneQr"), clientUrl.toString(), 260, '#000000');
+    await renderQrInto($("#phoneQr"), clientUrl.toString(), 280, '#000000');
 
     form.style.display='none';
     success.style.display='block';
