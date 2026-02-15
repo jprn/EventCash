@@ -4,6 +4,142 @@
   const state={wallet:null};
   let mode="new";
 
+  async function loadScript(src){
+    return new Promise((resolve,reject)=>{
+      const s=document.createElement('script');
+      s.src=src;
+      s.async=true;
+      s.onload=()=>resolve();
+      s.onerror=()=>reject(new Error('failed:'+src));
+      document.head.appendChild(s);
+    });
+  }
+
+  async function ensureJsQR(){
+    if(typeof window.jsQR === 'function') return true;
+    const sources=[
+      'https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js',
+      'https://unpkg.com/jsqr@1.4.0/dist/jsQR.js',
+    ];
+    for(const src of sources){
+      try{
+        await loadScript(src);
+        if(typeof window.jsQR === 'function') return true;
+      }catch(_e){
+        // continue
+      }
+    }
+    return false;
+  }
+
+  async function scanQr(){
+    if(!('mediaDevices' in navigator) || !navigator.mediaDevices.getUserMedia){
+      throw new Error('camera_unavailable');
+    }
+    const hasBarcodeDetector=(typeof window.BarcodeDetector === 'function');
+    const detector=hasBarcodeDetector ? new window.BarcodeDetector({formats:['qr_code']}) : null;
+
+    const overlay=document.createElement('div');
+    overlay.style.cssText='position:fixed;inset:0;background:rgba(15,23,42,.55);display:flex;align-items:center;justify-content:center;padding:16px;z-index:9999';
+    const card=document.createElement('div');
+    card.style.cssText='width:min(520px,100%);background:#fff;border-radius:16px;overflow:hidden;border:1px solid rgba(15,23,42,.10);box-shadow:0 28px 80px rgba(15,23,42,.25)';
+    const head=document.createElement('div');
+    head.style.cssText='display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 14px;border-bottom:1px solid rgba(15,23,42,.08)';
+    head.innerHTML='<div style="font-weight:1000">Scanner le QR code</div>';
+    const close=document.createElement('button');
+    close.type='button';
+    close.textContent='Fermer';
+    close.style.cssText='appearance:none;border:1px solid rgba(15,23,42,.10);background:rgba(255,255,255,.9);border-radius:12px;min-height:38px;padding:0 12px;font-weight:1000;cursor:pointer';
+    head.appendChild(close);
+
+    const body=document.createElement('div');
+    body.style.cssText='padding:14px';
+    const video=document.createElement('video');
+    video.setAttribute('playsinline','');
+    video.style.cssText='width:100%;border-radius:12px;background:#000';
+    const hint=document.createElement('div');
+    hint.style.cssText='margin-top:10px;color:rgba(15,23,42,.65);font-size:13px;text-align:center;font-weight:900';
+    hint.textContent='Présentez le QR code devant la caméra';
+    body.appendChild(video);
+    body.appendChild(hint);
+
+    card.appendChild(head);
+    card.appendChild(body);
+    overlay.appendChild(card);
+    document.body.appendChild(overlay);
+
+    let stream=null;
+    let raf=0;
+    const cleanup=()=>{
+      if(raf) cancelAnimationFrame(raf);
+      if(stream){
+        stream.getTracks().forEach(t=>t.stop());
+        stream=null;
+      }
+      overlay.remove();
+    };
+    close.addEventListener('click',cleanup);
+    overlay.addEventListener('click',e=>{if(e.target===overlay) cleanup();});
+
+    try{
+      stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}});
+      video.srcObject=stream;
+      await video.play();
+    } catch(_e){
+      cleanup();
+      throw new Error('camera_permission_denied');
+    }
+
+    return await new Promise((resolve,reject)=>{
+      const tick=async ()=>{
+        try{
+          if(video.readyState>=2){
+            if(detector){
+              const codes=await detector.detect(video);
+              if(codes && codes[0] && codes[0].rawValue){
+                const val=String(codes[0].rawValue||'').trim();
+                cleanup();
+                resolve(val);
+                return;
+              }
+            } else {
+              const ok=await ensureJsQR();
+              if(!ok){
+                cleanup();
+                reject(new Error('barcode_detector_unavailable'));
+                return;
+              }
+              const w=video.videoWidth||0;
+              const h=video.videoHeight||0;
+              if(w>0 && h>0){
+                const canvas=document.createElement('canvas');
+                canvas.width=w;
+                canvas.height=h;
+                const ctx=canvas.getContext('2d',{willReadFrequently:true});
+                if(ctx){
+                  ctx.drawImage(video,0,0,w,h);
+                  const img=ctx.getImageData(0,0,w,h);
+                  const code=window.jsQR(img.data,w,h,{inversionAttempts:'attemptBoth'});
+                  if(code && code.data){
+                    const val=String(code.data||'').trim();
+                    cleanup();
+                    resolve(val);
+                    return;
+                  }
+                }
+              }
+            }
+          }
+          raf=requestAnimationFrame(tick);
+        } catch(e){
+          cleanup();
+          reject(e);
+        }
+      };
+      tick();
+    });
+  }
+
   function toast(msg,type){
     const el=$("#toast");
     el.className="toast "+(type||"");
@@ -245,6 +381,19 @@
     $("#createWallet").addEventListener("click",()=>createWallet().catch(e=>toast(e.message,"err")));
     $("#loadExisting").addEventListener("click",()=>loadExisting().then(()=>{$("#credit").disabled=false;}).catch(e=>toast(e.message,"err")));
     $("#existingToken").addEventListener("keydown",e=>{if(e.key==="Enter"){loadExisting().then(()=>{$("#credit").disabled=false;}).catch(er=>toast(er.message,"err"));}});
+
+    const scan=$("#existingScan");
+    if(scan){
+      scan.addEventListener('click',async ()=>{
+        try{
+          const token=await scanQr();
+          $("#existingToken").value=token;
+          await loadExisting();
+        }catch(e){
+          toast(e.message,"err");
+        }
+      });
+    }
 
     const cancel=$("#cancelExisting");
     if(cancel){
