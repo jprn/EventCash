@@ -108,6 +108,21 @@
             Gestion des Wallets
           </div>
 
+          <div id="walletPreview" class="a-preview" style="display:none">
+            <div class="a-previewHead">
+              <div class="a-previewTitle">Aperçu du wallet</div>
+              <button id="walletPreviewClose" class="a-previewClose" type="button">Fermer</button>
+            </div>
+            <div class="a-previewGrid">
+              <div class="a-previewQr" id="walletPreviewQr"></div>
+              <div class="a-previewMeta">
+                <div class="a-previewRow"><div class="k">Token</div><div class="v a-token" id="walletPreviewToken"></div></div>
+                <div class="a-previewRow"><div class="k">Solde</div><div class="v" id="walletPreviewBalance"></div></div>
+                <div class="a-previewRow"><div class="k">Statut</div><div class="v" id="walletPreviewStatus"></div></div>
+              </div>
+            </div>
+          </div>
+
           <div class="a-walletHeader">
             <div class="a-search" style="flex:1">
               <svg viewBox="0 0 24 24"><path d="M21 21l-4.3-4.3"/><path d="M11 18a7 7 0 1 1 0-14 7 7 0 0 1 0 14"/></svg>

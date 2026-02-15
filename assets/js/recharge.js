@@ -30,7 +30,11 @@
       if(window.QRCode&&typeof window.QRCode.toCanvas==="function"){
         const canvas=document.createElement("canvas");
         wrap.appendChild(canvas);
-        await window.QRCode.toCanvas(canvas,value,{width:220,margin:1});
+        await window.QRCode.toCanvas(canvas,value,{
+          width:220,
+          margin:1,
+          color:{dark:'#16a34a',light:'#ffffff'}
+        });
         return;
       }
     } catch(_e) {
@@ -42,7 +46,7 @@
     img.height=220;
     img.loading='lazy';
     img.referrerPolicy='no-referrer';
-    img.src='https://api.qrserver.com/v1/create-qr-code/?size=220x220&data='+encodeURIComponent(value);
+    img.src='https://api.qrserver.com/v1/create-qr-code/?size=220x220&color=22-163-74&bgcolor=255-255-255&data='+encodeURIComponent(value);
     wrap.appendChild(img);
   }
 
@@ -119,7 +123,11 @@
       if(window.QRCode&&typeof window.QRCode.toCanvas==="function"){
         const canvas=document.createElement("canvas");
         el.appendChild(canvas);
-        await window.QRCode.toCanvas(canvas,value,{width:size||240,margin:1});
+        await window.QRCode.toCanvas(canvas,value,{
+          width:size||240,
+          margin:1,
+          color:{dark:'#16a34a',light:'#ffffff'}
+        });
         return;
       }
     } catch(_e) {
@@ -132,7 +140,7 @@
     img.height=s;
     img.loading='lazy';
     img.referrerPolicy='no-referrer';
-    img.src='https://api.qrserver.com/v1/create-qr-code/?size='+encodeURIComponent(String(s)+'x'+String(s))+'&data='+encodeURIComponent(value);
+    img.src='https://api.qrserver.com/v1/create-qr-code/?size='+encodeURIComponent(String(s)+'x'+String(s))+'&color=22-163-74&bgcolor=255-255-255&data='+encodeURIComponent(value);
     el.appendChild(img);
   }
 
@@ -221,7 +229,7 @@
       if(!token){toast("Aucun wallet.","err");return;}
       const w=window.open("","_blank");
       if(!w){toast("Popup bloquée.","err");return;}
-      const imgSrc='https://api.qrserver.com/v1/create-qr-code/?size=320x320&data='+encodeURIComponent(token);
+      const imgSrc='https://api.qrserver.com/v1/create-qr-code/?size=320x320&color=22-163-74&bgcolor=255-255-255&data='+encodeURIComponent(token);
       w.document.write('<!doctype html><html><head><meta charset="utf-8"><title>QR</title><style>body{font-family:system-ui;margin:24px} img{width:320px;height:320px} .t{font-size:14px;color:#111;margin-top:10px;word-break:break-all}</style></head><body><img src="'+imgSrc+'" alt="QR" /><div class="t">'+token+'</div><script>window.onload=()=>window.print();<\/script></body></html>');
       w.document.close();
     });
