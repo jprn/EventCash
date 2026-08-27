@@ -1,3 +1,4 @@
+<?php $EVENCASH_ROLE = 'admin'; require_once __DIR__ . '/../api/auth_check.php'; ?>
 <!doctype html>
 <html lang="fr">
   <head>
@@ -172,8 +173,8 @@
       <div class="footer">Templates — renomme ce dossier sur Hostinger en URL secrète.</div>
     </div>
 
-    <script src="/assets/js/config.js?v=2"></script>
-    <script src="/assets/js/api.js?v=2"></script>
-    <script src="/assets/js/admin.js?v=2"></script>
+    <script src="/assets/js/config.js?v=3"></script>
+    <script src="/assets/js/api.js?v=3"></script>
+    <script src="/assets/js/admin.js?v=3"></script>
   </body>
 </html>

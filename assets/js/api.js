@@ -1,29 +1,22 @@
 window.EvenCashApi=(function(){
   function cfg(){
     const c=(window.EVENCASH_CONFIG||{});
-    return {base:(c.API_BASE||"/api").replace(/\/$/,""),key:String(c.API_KEY||"")};
+    return {base:(c.API_BASE||"/api").replace(/\/$/,"")};
   }
   async function request(path,{method="GET",body=null,query=null}={}){
-    const {base,key}=cfg();
+    const {base}=cfg();
     const url=new URL(base+"/"+path.replace(/^\//,""),window.location.origin);
     if(query&&typeof query==="object"){
       Object.keys(query).forEach(k=>{if(query[k]!==undefined&&query[k]!==null)url.searchParams.set(k,String(query[k]));});
     }
 
-    if(key){
-      url.searchParams.set('key', key);
-    }
-
-    const headers={"X-EVENCASH-KEY":key};
-    if(key){
-      headers["Authorization"]="Bearer "+key;
-    }
+    const headers={};
     let payload=null;
     if(body!==null){
       headers["Content-Type"]="application/json";
       payload=JSON.stringify(body);
     }
-    const res=await fetch(url.toString(),{method,headers,body:payload});
+    const res=await fetch(url.toString(),{method,headers,body:payload,credentials:'include'});
     const ct=res.headers.get("content-type")||"";
     if(ct.includes("application/json")){
       const data=await res.json();
@@ -48,6 +41,7 @@ window.EvenCashApi=(function(){
     return text;
   }
   return {
+    login:(role,pin)=>request("login.php",{method:"POST",body:{role,pin}}),
     walletCreate:()=>request("wallet_create.php",{method:"POST",body:{}}),
     walletByToken:(token)=>request("wallet_by_token.php",{query:{token}}),
     walletCredit:(wallet_id,amount)=>request("wallet_credit.php",{method:"POST",body:{wallet_id,amount}}),

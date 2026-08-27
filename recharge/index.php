@@ -1,3 +1,4 @@
+<?php $EVENCASH_ROLE = 'recharge'; require_once __DIR__ . '/../api/auth_check.php'; ?>
 <!doctype html>
 <html lang="fr">
   <head>
@@ -165,9 +166,9 @@
         </div>
       </div>
     </div>
-    <script src="/assets/js/config.js?v=2"></script>
-    <script src="/assets/js/qr.js?v=2"></script>
-    <script src="/assets/js/api.js?v=2"></script>
-    <script src="/assets/js/recharge.js?v=2"></script>
+    <script src="/assets/js/config.js?v=3"></script>
+    <script src="/assets/js/qr.js?v=3"></script>
+    <script src="/assets/js/api.js?v=3"></script>
+    <script src="/assets/js/recharge.js?v=3"></script>
   </body>
 </html>

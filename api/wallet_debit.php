@@ -5,7 +5,7 @@ declare(strict_types=1);
 require_once __DIR__ . '/db.php';
 require_once __DIR__ . '/http.php';
 
-require_api_key();
+require_role('seller');
 
 $body = get_json_body();
 $token = $body['qr_token'] ?? null;

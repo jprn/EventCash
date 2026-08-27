@@ -5,7 +5,7 @@ declare(strict_types=1);
 require_once __DIR__ . '/db.php';
 require_once __DIR__ . '/http.php';
 
-require_api_key();
+require_role('admin');
 
 $q = $_GET['q'] ?? '';
 if (!is_string($q)) {

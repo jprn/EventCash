@@ -5,7 +5,6 @@ declare(strict_types=1);
 require_once __DIR__ . '/db.php';
 require_once __DIR__ . '/http.php';
 
-require_api_key();
 
 $stand = $_GET['stand'] ?? null;
 if ($stand !== null && !is_string($stand)) {

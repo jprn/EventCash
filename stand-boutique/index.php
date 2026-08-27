@@ -1,9 +1,10 @@
+<?php $EVENCASH_ROLE = 'seller'; require_once __DIR__ . '/../api/auth_check.php'; ?>
 <!doctype html>
 <html lang="fr">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Stand — Restauration</title>
+    <title>Stand — Boutique</title>
     <link rel="stylesheet" href="/assets/css/app.css" />
     <link rel="stylesheet" href="/assets/css/stand.css" />
   </head>
@@ -19,9 +20,9 @@
         <div class="nav" aria-label="Navigation">
           <a href="/client/"><svg viewBox="0 0 24 24"><path d="M12 12a4 4 0 1 0-4-4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>Mon Wallet</a>
           <a href="/recharge/"><svg viewBox="0 0 24 24"><path d="M12 5v14"/><path d="M5 12h14"/></svg>Recharge</a>
-          <a class="active" href="#"><svg viewBox="0 0 24 24"><path d="M6 7h12"/><path d="M6 12h12"/><path d="M6 17h12"/></svg>Restauration</a>
+          <a href="/stand-restauration/"><svg viewBox="0 0 24 24"><path d="M6 7h12"/><path d="M6 12h12"/><path d="M6 17h12"/></svg>Restauration</a>
           <a href="/stand-buvette/"><svg viewBox="0 0 24 24"><path d="M6 7h12"/><path d="M6 12h12"/><path d="M6 17h12"/></svg>Buvette</a>
-          <a href="/stand-boutique/"><svg viewBox="0 0 24 24"><path d="M6 7h12"/><path d="M6 12h12"/><path d="M6 17h12"/></svg>Boutique</a>
+          <a class="active" href="#"><svg viewBox="0 0 24 24"><path d="M6 7h12"/><path d="M6 12h12"/><path d="M6 17h12"/></svg>Boutique</a>
           <a href="/admin/"><svg viewBox="0 0 24 24"><path d="M12 3v18"/><path d="M3 12h18"/></svg>Admin</a>
         </div>
       </div>
@@ -30,7 +31,7 @@
         <div class="s-icon" aria-hidden="true">
           <svg viewBox="0 0 24 24"><path d="M7 10V7a5 5 0 0 1 10 0v3"/><path d="M6 10h12v10H6z"/></svg>
         </div>
-        <div class="s-title">Restauration</div>
+        <div class="s-title">Boutique</div>
         <p class="s-subtitle" id="standName"></p>
       </div>
 
@@ -81,9 +82,9 @@
       <div class="footer">Templates — renomme ce dossier sur Hostinger en URL secrète.</div>
     </div>
 
-    <script>window.EVENCASH_STAND_NAME="Restauration";</script>
-    <script src="/assets/js/config.js?v=2"></script>
-    <script src="/assets/js/api.js?v=2"></script>
-    <script src="/assets/js/stand.js?v=2"></script>
+    <script>window.EVENCASH_STAND_NAME="Boutique";</script>
+    <script src="/assets/js/config.js?v=3"></script>
+    <script src="/assets/js/api.js?v=3"></script>
+    <script src="/assets/js/stand.js?v=3"></script>
   </body>
 </html>

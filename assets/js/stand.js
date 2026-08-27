@@ -358,25 +358,22 @@
   }
 
   function askPin(amount,product){
-    const requiredPin=(window.EVENCASH_CONFIG||{}).SELLER_PIN;
-    if(!requiredPin){
-      payNow(amount,product);
-      return;
-    }
     showModal({
       title:'Validation vendeur',
       message:'Saisissez votre code PIN pour valider le paiement.',
       variant:'info',
       includePin:true,
+      dismissable:false,
       actions:[
         {label:'Annuler',kind:'neutral',onClick:({close})=>close()},
-        {label:'Valider',kind:'primary',onClick:({close,pin})=>{
+        {label:'Valider',kind:'primary',onClick:async ({close,pin})=>{
           close();
-          if(pin!==requiredPin){
+          try{
+            await api.login('seller',pin);
+            askClientPin(amount,product);
+          }catch(e){
             showModal({title:'PIN incorrect',message:'Le code vendeur est incorrect.',variant:'error',actions:[{label:'OK',kind:'neutral',onClick:({close:c})=>c()}]});
-            return;
           }
-          askClientPin(amount,product);
         }}
       ]
     });
