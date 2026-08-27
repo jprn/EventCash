@@ -449,7 +449,43 @@
     }
   }
 
+  function requireAccess(){
+    const requiredPin=(window.EVENCASH_CONFIG||{}).RECHARGE_PIN;
+    const already=sessionStorage.getItem("recharge_auth")==="1";
+    if(!requiredPin || already){ return true; }
+    const container=document.querySelector(".container");
+    if(container){ container.style.display="none"; }
+    const overlay=document.createElement("div");
+    overlay.id="rechargeAccess";
+    overlay.style.cssText="position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#fff;z-index:10000;";
+    overlay.innerHTML=`<div style="font-size:24px;font-weight:800;margin-bottom:16px;color:#0f172a;">Accès Accueil</div>
+      <input id="rechargePin" type="password" placeholder="Code PIN" style="padding:10px 14px;font-size:16px;border:1px solid #ccc;border-radius:8px;margin-bottom:12px;width:220px;text-align:center;" />
+      <button id="rechargePinBtn" type="button" style="padding:10px 18px;font-size:16px;border:none;border-radius:8px;background:#0f172a;color:#fff;cursor:pointer;width:220px;">Valider</button>
+      <div id="rechargePinErr" style="color:#d00;margin-top:10px;display:none;">Code incorrect</div>`;
+    document.body.appendChild(overlay);
+    const tryAuth=()=>{
+      const input=overlay.querySelector("#rechargePin");
+      const err=overlay.querySelector("#rechargePinErr");
+      const pin=input?input.value:"";
+      if(pin===requiredPin){
+        sessionStorage.setItem("recharge_auth","1");
+        overlay.remove();
+        if(container){ container.style.display=""; }
+        initApp();
+      } else if(err){ err.style.display="block"; }
+    };
+    const btn=overlay.querySelector("#rechargePinBtn");
+    const input=overlay.querySelector("#rechargePin");
+    if(btn){ btn.addEventListener("click",tryAuth); }
+    if(input){ input.addEventListener("keydown",e=>{ if(e.key==="Enter") tryAuth(); }); }
+    return false;
+  }
+
   function init(){
+    if(requireAccess()){ initApp(); }
+  }
+
+  function initApp(){
     bind();
     setMode("new");
     toast("Prêt.");

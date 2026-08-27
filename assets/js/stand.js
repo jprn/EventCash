@@ -46,12 +46,14 @@
     }
   }
 
-  function showModal({title,message,variant,actions,includeReason,includePin}={}){
+  function showModal({title,message,variant,actions,includeReason,includePin,dismissable=true}={}){
     closeModal();
 
     const overlay=document.createElement('div');
     overlay.className='s-modalOverlay';
-    overlay.addEventListener('click',e=>{if(e.target===overlay) closeModal();});
+    if(dismissable!==false){
+      overlay.addEventListener('click',e=>{if(e.target===overlay) closeModal();});
+    }
 
     const modal=document.createElement('div');
     modal.className='s-modal'+(variant?(' '+variant):'');
@@ -70,7 +72,7 @@
     close.addEventListener('click',closeModal);
 
     head.appendChild(t);
-    head.appendChild(close);
+    if(dismissable!==false){ head.appendChild(close); }
 
     const body=document.createElement('div');
     body.className='s-modalBody';
@@ -416,7 +418,38 @@
     }
   }
 
+  function requireAccess(){
+    const requiredPin=(window.EVENCASH_CONFIG||{}).SELLER_PIN;
+    const already=sessionStorage.getItem("stand_auth")==="1";
+    if(!requiredPin || already){ return true; }
+    showModal({
+      title:'Accès vendeur',
+      message:'Saisissez le code vendeur pour ouvrir ce stand.',
+      variant:'info',
+      includePin:true,
+      dismissable:false,
+      actions:[
+        {label:'Valider',kind:'primary',onClick:({pin})=>{
+          if(pin!==requiredPin){
+            showModal({title:'PIN incorrect',message:'Le code vendeur est incorrect.',variant:'error',dismissable:false,actions:[
+              {label:'OK',kind:'neutral',onClick:({close:c})=>{ c(); requireAccess(); }}
+            ]});
+            return;
+          }
+          sessionStorage.setItem("stand_auth","1");
+          closeModal();
+          initApp();
+        }}
+      ]
+    });
+    return false;
+  }
+
   function init(){
+    if(requireAccess()){ initApp(); }
+  }
+
+  function initApp(){
     $("#standName").textContent=standName;
 
     const scanBtn=$("#scan");
