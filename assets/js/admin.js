@@ -208,6 +208,37 @@
   }
 
   function init(){
+    const requiredPin=(window.EVENCASH_CONFIG||{}).ADMIN_PIN;
+    const already=sessionStorage.getItem("admin_auth")==="1";
+    const login=$("#adminLogin");
+    const container=document.querySelector(".container");
+
+    if(requiredPin && !already){
+      const pin=$("#adminPin");
+      const btn=$("#adminLoginBtn");
+      const err=$("#adminLoginErr");
+      if(login && pin && btn){
+        if(login){ login.style.display="flex"; }
+        if(container){ container.style.display="none"; }
+        const tryAuth=()=>{
+          if(pin.value===requiredPin){
+            sessionStorage.setItem("admin_auth","1");
+            if(login){ login.style.display="none"; }
+            if(container){ container.style.display="block"; }
+            init();
+          } else if(err){
+            err.style.display="block";
+          }
+        };
+        btn.addEventListener("click",tryAuth);
+        pin.addEventListener("keydown",(ev)=>{if(ev.key==="Enter") tryAuth();});
+        return;
+      }
+    } else {
+      if(login){ login.style.display="none"; }
+      if(container){ container.style.display="block"; }
+    }
+
     $("#refresh").addEventListener("click",()=>refresh().catch(e=>toast(e.message,"err")));
 
     const close=$("#walletPreviewClose");
