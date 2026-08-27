@@ -4,6 +4,7 @@ CREATE TABLE wallets (
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   is_active TINYINT(1) NOT NULL DEFAULT 1,
   qr_token VARCHAR(128) NOT NULL,
+  pin VARCHAR(16) DEFAULT NULL,
   PRIMARY KEY (id),
   UNIQUE KEY uq_wallets_qr_token (qr_token)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

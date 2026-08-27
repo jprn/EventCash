@@ -13,7 +13,7 @@ if (!is_string($token) || $token === '') {
 }
 
 $pdo = db();
-$stmt = $pdo->prepare('SELECT id, balance, is_active, created_at, qr_token FROM wallets WHERE qr_token = ? LIMIT 1');
+$stmt = $pdo->prepare('SELECT id, balance, is_active, created_at, qr_token, pin FROM wallets WHERE qr_token = ? LIMIT 1');
 $stmt->execute([$token]);
 $row = $stmt->fetch();
 if (!$row) {

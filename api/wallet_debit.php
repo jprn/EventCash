@@ -28,7 +28,7 @@ $pdo = db();
 try {
   $pdo->beginTransaction();
 
-  $stmt = $pdo->prepare('SELECT id, balance, is_active FROM wallets WHERE qr_token = ? FOR UPDATE');
+  $stmt = $pdo->prepare('SELECT id, balance, is_active, pin FROM wallets WHERE qr_token = ? FOR UPDATE');
   $stmt->execute([$token]);
   $wallet = $stmt->fetch();
   if (!$wallet) {
@@ -38,6 +38,13 @@ try {
   if ((int)$wallet['is_active'] !== 1) {
     $pdo->rollBack();
     send_json(['error' => 'wallet_inactive'], 400);
+  }
+
+  $clientPin = $body['client_pin'] ?? null;
+  $walletPin = (string)($wallet['pin'] ?? '');
+  if ($walletPin !== '' && $clientPin !== $walletPin) {
+    $pdo->rollBack();
+    send_json(['error' => 'invalid_client_pin'], 403);
   }
 
   $balance = (string)$wallet['balance'];

@@ -151,6 +151,7 @@
     state.wallet=w;
     $("#walletId").textContent=w?String(w.id||""):"";
     $("#walletToken").textContent=w?String(w.qr_token||""):"";
+    $("#walletPin").textContent=w?String(w.pin||""):"";
     $("#walletBalance").textContent=w?String(w.balance||"0.00")+"€":"0.00€";
     $("#walletActive").textContent=w?(String(w.is_active)==="1"?"actif":"inactif"):"";
   }
@@ -206,7 +207,7 @@
   async function createWallet(){
     toast("Création du wallet…");
     const data=await api.walletCreate();
-    const w={id:data.id,qr_token:data.qr_token,balance:data.balance,is_active:data.is_active};
+    const w={id:data.id,qr_token:data.qr_token,pin:data.pin,balance:data.balance,is_active:data.is_active};
     setWallet(w);
 
     const amount=optionalAmountFromInput();

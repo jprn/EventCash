@@ -374,15 +374,35 @@
             showModal({title:'PIN incorrect',message:'Le code vendeur est incorrect.',variant:'error',actions:[{label:'OK',kind:'neutral',onClick:({close:c})=>c()}]});
             return;
           }
-          payNow(amount,product);
+          askClientPin(amount,product);
         }}
       ]
     });
   }
 
-  async function payNow(amount,product){
+  function askClientPin(amount,product){
+    showModal({
+      title:'PIN client',
+      message:'Demandez au client son code PIN, puis saisissez-le.',
+      variant:'info',
+      includePin:true,
+      actions:[
+        {label:'Annuler',kind:'neutral',onClick:({close})=>close()},
+        {label:'Valider',kind:'primary',onClick:({close,pin})=>{
+          close();
+          if(String(pin||'').trim()===''){
+            showModal({title:'PIN manquant',message:'Le client doit saisir son PIN.',variant:'error',actions:[{label:'OK',kind:'neutral',onClick:({close:c})=>c()}]});
+            return;
+          }
+          payNow(amount,product,pin);
+        }}
+      ]
+    });
+  }
+
+  async function payNow(amount,product,clientPin){
     try{
-      const data=await api.walletDebit(state.token,amount,String(product.name),standName);
+      const data=await api.walletDebit(state.token,amount,String(product.name),standName,clientPin);
       setWallet({...(state.wallet||{}),balance:data.balance,is_active:1});
       showModal({title:'Paiement validé',message:'Nouveau solde : '+String(data.balance)+'€',variant:'success',actions:[{label:'OK',kind:'neutral',onClick:({close:c})=>c()}]});
       const audio=$("#beep");

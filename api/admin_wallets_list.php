@@ -17,10 +17,10 @@ $pdo = db();
 
 if ($q !== '') {
   $like = '%' . $q . '%';
-  $stmt = $pdo->prepare('SELECT id, qr_token, balance, is_active, created_at FROM wallets WHERE qr_token LIKE ? ORDER BY created_at DESC LIMIT 200');
+  $stmt = $pdo->prepare('SELECT id, qr_token, balance, is_active, created_at, pin FROM wallets WHERE qr_token LIKE ? ORDER BY created_at DESC LIMIT 200');
   $stmt->execute([$like]);
 } else {
-  $stmt = $pdo->query('SELECT id, qr_token, balance, is_active, created_at FROM wallets ORDER BY created_at DESC LIMIT 200');
+  $stmt = $pdo->query('SELECT id, qr_token, balance, is_active, created_at, pin FROM wallets ORDER BY created_at DESC LIMIT 200');
 }
 
 send_json(['wallets' => $stmt->fetchAll()]);

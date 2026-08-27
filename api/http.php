@@ -57,6 +57,11 @@ function random_token(int $bytes = 32): string {
   return bin2hex(random_bytes($bytes));
 }
 
+function random_pin(int $digits = 4): string {
+  $max = 10 ** $digits - 1;
+  return str_pad((string)random_int(0, $max), $digits, '0', STR_PAD_LEFT);
+}
+
 function amount_from($value): string {
   if (is_int($value) || is_float($value) || (is_string($value) && $value !== '')) {
     $n = (float)$value;

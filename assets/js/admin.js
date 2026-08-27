@@ -137,6 +137,8 @@
     if(!panel){return;}
 
     const token=String(w.qr_token||"");
+    const pinEl=$("#walletPreviewPin");
+    if(pinEl){pinEl.textContent=String(w.pin||"");}
     $("#walletPreviewToken").textContent=token;
     $("#walletPreviewBalance").textContent=euro(w.balance);
     const active=(String(w.is_active)==="1" || w.is_active===1);

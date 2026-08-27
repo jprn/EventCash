@@ -155,6 +155,8 @@
     lastToken=String(w.qr_token||token);
     $("#balance").textContent=String(w.balance)+"€";
     $("#active").textContent=String(w.is_active)==="1"?"actif":"inactif";
+    const pinEl=$("#pin");
+    if(pinEl){pinEl.textContent=String(w.pin||"—");}
     await renderPayQr(lastToken);
     toast("OK.","ok");
   }
