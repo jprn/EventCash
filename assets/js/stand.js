@@ -46,7 +46,7 @@
     }
   }
 
-  function showModal({title,message,variant,actions,includeReason}={}){
+  function showModal({title,message,variant,actions,includeReason,includePin}={}){
     closeModal();
 
     const overlay=document.createElement('div');
@@ -81,6 +81,7 @@
     body.appendChild(msg);
 
     let reasonEl=null;
+    let pinEl=null;
     if(includeReason){
       const note=document.createElement('div');
       note.className='s-modalNote';
@@ -88,6 +89,18 @@
       reasonEl=document.createElement('textarea');
       reasonEl.placeholder='Expliquez la raison…';
       note.appendChild(reasonEl);
+      body.appendChild(note);
+    }
+    if(includePin){
+      const note=document.createElement('div');
+      note.className='s-modalNote';
+      note.innerHTML='<div class="l">Code vendeur</div>';
+      pinEl=document.createElement('input');
+      pinEl.type='password';
+      pinEl.inputMode='numeric';
+      pinEl.maxLength=12;
+      pinEl.placeholder='Saisissez le PIN…';
+      note.appendChild(pinEl);
       body.appendChild(note);
     }
 
@@ -99,7 +112,7 @@
       b.type='button';
       b.className='s-modalBtn '+(a.kind||'neutral');
       b.textContent=String(a.label||'OK');
-      b.addEventListener('click',()=>a.onClick && a.onClick({close:closeModal,reason:reasonEl?String(reasonEl.value||'').trim():''}));
+      b.addEventListener('click',()=>a.onClick && a.onClick({close:closeModal,reason:reasonEl?String(reasonEl.value||'').trim():'',pin:pinEl?String(pinEl.value||'').trim():''}));
       act.appendChild(b);
     });
 
@@ -334,27 +347,52 @@
               showModal({title:'Refus enregistré',message:r,variant:'error',actions:[{label:'OK',kind:'neutral',onClick:({close:c})=>c()}]});
             }}
           ]});}},
-          {label:'Valider',kind:'primary',onClick:async ({close})=>{
-            try{
-              const data=await api.walletDebit(state.token,amount,String(p.name),standName);
-              setWallet({...(state.wallet||{}),balance:data.balance,is_active:1});
-              close();
-              showModal({title:'Paiement validé',message:'Nouveau solde : '+String(data.balance)+'€',variant:'success',actions:[{label:'OK',kind:'neutral',onClick:({close:c})=>c()}]});
-              const audio=$("#beep");
-              if(audio&&typeof audio.play==="function"){
-                audio.currentTime=0;
-                audio.play().catch(()=>{});
-              }
-              resetForm();
-            }catch(e){
-              close();
-              showModal({title:'Paiement refusé',message:String(e.message||'Erreur'),variant:'error',actions:[{label:'OK',kind:'neutral',onClick:({close:c})=>c()}]});
-            }
-          }},
+          {label:'Valider',kind:'primary',onClick:({close})=>{close(); askPin(amount,p);}},
         ]
       });
     } catch(e) {
       showModal({title:'Erreur',message:String(e.message||e),variant:'error',actions:[{label:'OK',kind:'neutral',onClick:({close})=>close()}]});
+    }
+  }
+
+  function askPin(amount,product){
+    const requiredPin=(window.EVENCASH_CONFIG||{}).SELLER_PIN;
+    if(!requiredPin){
+      payNow(amount,product);
+      return;
+    }
+    showModal({
+      title:'Validation vendeur',
+      message:'Saisissez votre code PIN pour valider le paiement.',
+      variant:'info',
+      includePin:true,
+      actions:[
+        {label:'Annuler',kind:'neutral',onClick:({close})=>close()},
+        {label:'Valider',kind:'primary',onClick:({close,pin})=>{
+          close();
+          if(pin!==requiredPin){
+            showModal({title:'PIN incorrect',message:'Le code vendeur est incorrect.',variant:'error',actions:[{label:'OK',kind:'neutral',onClick:({close:c})=>c()}]});
+            return;
+          }
+          payNow(amount,product);
+        }}
+      ]
+    });
+  }
+
+  async function payNow(amount,product){
+    try{
+      const data=await api.walletDebit(state.token,amount,String(product.name),standName);
+      setWallet({...(state.wallet||{}),balance:data.balance,is_active:1});
+      showModal({title:'Paiement validé',message:'Nouveau solde : '+String(data.balance)+'€',variant:'success',actions:[{label:'OK',kind:'neutral',onClick:({close:c})=>c()}]});
+      const audio=$("#beep");
+      if(audio&&typeof audio.play==="function"){
+        audio.currentTime=0;
+        audio.play().catch(()=>{});
+      }
+      resetForm();
+    }catch(e){
+      showModal({title:'Paiement refusé',message:String(e.message||'Erreur'),variant:'error',actions:[{label:'OK',kind:'neutral',onClick:({close:c})=>c()}]});
     }
   }
 
